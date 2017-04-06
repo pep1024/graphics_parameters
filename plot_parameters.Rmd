@@ -182,8 +182,7 @@ mtext("cex does not affect mtext", line = 2, side = 1)
 
 ```
 
-############################################
-TBC 
+
 ## col
 A specification for the default plotting color. See section ‘Color Specification’.
 
@@ -202,19 +201,109 @@ col.sub
 The color to be used for plot sub-titles. Defaults to "black".
 
 
+```{r}
+par(mfrow = c(2, 1))
+par(cex = 0.7)
+
+op_cex <- par("col")
+par(col = "red")
+plot(0.5, 0.5
+     , xlim = c(0, 1), ylim = c(0, 1)
+     , xlab = "", ylab = "0:1"
+     , main = "col example (col = red)", sub = "Subtitle line")
+text(0.5, 0.8, paste("col", par("col")))
+text(0.5, 0.7, paste("col.main", par("col.main")))
+text(0.5, 0.6, paste("col.sub", par("col.sub")))
+text(0.5, 0.4, paste("col.lab", par("col.lab")))
+text(0.5, 0.3, paste("col.axis", par("col.axis")))
+mtext("col affects mtext, text and box", line = 2, side = 1)
+
+
+par(col = "red", col.main = "green", col.sub = "blue", col.lab = "yellow",
+    col.axis = "brown")
+plot(0.5, 0.5
+     , xlim = c(0, 1), ylim = c(0, 1)
+     , xlab = "", ylab = "0:1"
+     , main = "col example (col = red)", sub = "Subtitle line")
+text(0.5, 0.8, paste("col", par("col")))
+text(0.5, 0.7, paste("col.main", par("col.main")))
+text(0.5, 0.6, paste("col.sub", par("col.sub")))
+text(0.5, 0.4, paste("col.lab", par("col.lab")))
+text(0.5, 0.3, paste("col.axis", par("col.axis")))
+mtext("col does affect mtext, text and box", line = 2, side = 1)
+
+```
+
+
 ## crt
 A numerical value specifying (in degrees) how single characters should be rotated. It is unwise to expect values other than multiples of 90 to work. Compare with srt which does string rotation.
 
 
+```{r}
+par(crt = 180)
+plot(0.5, 0.5
+     , xlim = c(0, 1), ylim = c(0, 1)
+     , xlab = "", ylab = "0:1"
+     , main = "crt example", sub = "Subtitle line"
+     , pch = "o")
+text(0.5, 0.8, paste("crt", par("crt")))
+text(0.5, 0.7, paste("srt", par("srt")))
+mtext("crt is ignired in screen device", line = 2, side = 1)
 
-#####################
-TBD
-family
+
+```
+
+
+## family
 The name of a font family for drawing text. The maximum allowed length is 200 bytes. This name gets mapped by each graphics device to a device-specific font description. The default value is "" which means that the default device fonts will be used (and what those are should be listed on the help page for the device). Standard values are "serif", "sans" and "mono", and the Hershey font families are also available. (Devices may define others, and some devices will ignore this setting completely. Names starting with "Hershey" are treated specially and should only be used for the built-in Hershey font families.) This can be specified inline for text.
 
-fg
+
+```{r}
+par(cex = 1)
+plot(1:10, 1:10, type = 'n'
+     , xlim = c(0, 10), ylim = c(0, 10)
+     , xlab = "", ylab = "0:10"
+     , main = "family parameter example")
+
+windowsFonts(
+    A = windowsFont("Arial Black"),
+    B = windowsFont("Bookman Old Style"),
+    C = windowsFont("Comic Sans MS"),
+    D = windowsFont("Symbol"),
+    E = windowsFont("Comic Sans MS"))
+
+par(adj = 0)
+text(1, 8, paste("family (sans Arial)", par("family")))
+par(family = "serif")
+text(1, 7, paste("TT Times New Roman, family", par("family")))
+par(family = "mono")
+text(1, 6, paste("TT Courier New,family", par("family")))
+par(family = "sans")
+text(1, 5, paste("TT Arial, family", par("family")))
+
+text(1, 1, family="A", "Font: Arial Black")
+text(1, 2, family="B", "Font: Bookman Old Style")
+text(1, 3, family="C", "Font: Comic Sans MS")
+text(1, 4, family="D", "Font: Symbol")
+
+mtext("Example from: http://www.statmethods.net/advgraphs/parameters.html",
+      line = 2, side = 1)
+```
+
+
+## fg
 The color to be used for the foreground of plots. This is the default color used for things like axes and boxes around plots. When called from par() this also sets parameter col to the same value. See section ‘Color Specification’. A few devices have an argument to set the initial value, which is otherwise "black".
 
+
+```{r}
+par(fg = 'blue')
+set.seed(1023)
+plot(runif(10), runif(10),
+     xlim = c(0, 1), ylim = c(0, 1), main = "fg parameter = blue; default = black")
+```
+
+########################################
+TBC
 fig
 A numerical vector of the form c(x1, x2, y1, y2) which gives the (NDC) coordinates of the figure region in the display region of the device. If you set this, unlike S, you start a new plot, so to add to an existing plot use new = TRUE as well.
 
