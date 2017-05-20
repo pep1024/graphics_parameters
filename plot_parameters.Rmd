@@ -11,13 +11,13 @@ knitr::opts_chunk$set(echo = TRUE)
 
 I give examples of use for each parameter in the par function base {graphics} package. The text that follows after each parameter is the text shown in the par function help.
 
-We save first the value of all parameters (those that can be chnaged) into a variable to be able to reset them to the intial state
+We save first the value of all parameters (those that can be changed) into a variable to be able to reset them to the intial state
 
 ```{r}
 op <- par(no.readonly = TRUE)
 ```
 
-## adj
+##adj
 The value of adj determines the way in which text strings are justified in text, mtext and title. A value of 0 produces left-justified text, 0.5 (the default) centered text and 1 right-justified text. (Any value in [0, 1] is allowed, and on most devices values outside that interval will also work.)
 
 Note that the adj argument of text also allows adj = c(x, y) for different adjustment in x- and y- directions. Note that whereas for text it refers to positioning of text about a point, for mtext and title it controls placement within the plot or device region.
@@ -43,7 +43,7 @@ mtext("Adj parameter (=1 in this text)", side = 1, line = 1, adj = 1)
 ```
 
 
-## ann
+##ann
 If set to FALSE, high-level plotting functions calling plot.default do not annotate the plots they produce with axis titles and overall titles. The default is to do annotation
 
 ```{r}
@@ -58,12 +58,12 @@ mtext("ann parameter = FALSE", side = 1, line = 2, cex = 0.7)
 ```
 
 
-## ask
+##ask
 logical. If TRUE (and the R session is interactive) the user is asked for input, before a new figure is drawn. As this applies to the device, it also affects output by packages grid and lattice. It can be set even on non-screen devices but may have no effect there.
 
 This not really a graphics parameter, and its use is deprecated in favour of devAskNewPage.
 
-## bg
+##bg
 The color to be used for the background of the device region. When called from par() it also sets new = FALSE. See section ‘Color Specification’ for suitable values. For many devices the initial value is set from the bg argument of the device, and for the rest it is normally "white".
 
 Note that some graphics functions such as plot.default and points have an argument of this name with a different meaning.
@@ -76,7 +76,7 @@ plot(runif(10), runif(10),
 ```
 
 
-## bty
+##bty
 A character string which determined the type of box which is drawn about plots. If bty is one of "o" (the default), "l", "7", "c", "u", or "]" the resulting box resembles the corresponding upper case letter. A value of "n" suppresses the box.
 
 ```{r}
@@ -102,7 +102,7 @@ mtext(paste0("bty = ", "']'"), line = 1, side = 1)
 
 ```
 
-## cex 
+##cex 
 A numerical value giving the amount by which plotting text and symbols should be magnified relative to the default. This starts as 1 when a device is opened, and is reset when the layout is changed, e.g. by setting mfrow.
 
 Note that some graphics functions such as plot.default have an argument of this name which multiplies this graphical parameter, and some functions such as points and text accept a vector of values which are recycled.
@@ -183,7 +183,7 @@ mtext("cex does not affect mtext", line = 2, side = 1)
 ```
 
 
-## col
+##col
 A specification for the default plotting color. See section ‘Color Specification’.
 
 Some functions such as lines and text accept a vector of values which are recycled and may be interpreted slightly differently.
@@ -235,7 +235,7 @@ mtext("col does affect mtext, text and box", line = 2, side = 1)
 ```
 
 
-## crt
+##crt
 A numerical value specifying (in degrees) how single characters should be rotated. It is unwise to expect values other than multiples of 90 to work. Compare with srt which does string rotation.
 
 
@@ -254,7 +254,7 @@ mtext("crt is ignired in screen device", line = 2, side = 1)
 ```
 
 
-## family
+##family
 The name of a font family for drawing text. The maximum allowed length is 200 bytes. This name gets mapped by each graphics device to a device-specific font description. The default value is "" which means that the default device fonts will be used (and what those are should be listed on the help page for the device). Standard values are "serif", "sans" and "mono", and the Hershey font families are also available. (Devices may define others, and some devices will ignore this setting completely. Names starting with "Hershey" are treated specially and should only be used for the built-in Hershey font families.) This can be specified inline for text.
 
 
@@ -291,7 +291,7 @@ mtext("Example from: http://www.statmethods.net/advgraphs/parameters.html",
 ```
 
 
-## fg
+##fg
 The color to be used for the foreground of plots. This is the default color used for things like axes and boxes around plots. When called from par() this also sets parameter col to the same value. See section ‘Color Specification’. A few devices have an argument to set the initial value, which is otherwise "black".
 
 
@@ -302,15 +302,84 @@ plot(runif(10), runif(10),
      xlim = c(0, 1), ylim = c(0, 1), main = "fg parameter = blue; default = black")
 ```
 
-########################################
-TBC
-fig
+
+##fig
 A numerical vector of the form c(x1, x2, y1, y2) which gives the (NDC) coordinates of the figure region in the display region of the device. If you set this, unlike S, you start a new plot, so to add to an existing plot use new = TRUE as well.
 
-fin
+```{r}
+par(mfrow = c(2, 2))
+
+# Create a subwindow
+# 1. plot area available when internal margins are 0
+par(mai = c(0, 0, 0, 0))
+
+set.seed(1023)
+plot(runif(10), runif(10), type = 'n', 
+    yaxt = 'n', xaxt = 'n', xlab = '', ylab = '', xlim = c(0, 1), ylim = c(0, 1))
+rect(0,0,1,1, col = "salmon")
+points(runif(10), runif(10))
+
+abline(h = c(0, 1), v = c(0, 1), lty = 2)
+text(0.05, 0.15, "Note that the plot area has the extensions \nbeyond x=c(0,1) and y=c(0,1); white area", adj = 0)
+box("plot", lty = "11")
+
+# 2. Parameter to delete extra space
+par(xaxs = 'i', yaxs = 'i')
+
+set.seed(1023)
+plot(runif(10), runif(10), type = 'n', 
+    yaxt = 'n', xaxt = 'n', xlab = '', ylab = '', xlim = c(0, 1), ylim = c(0, 1))
+rect(0,0,1,1, col = "salmon")
+points(runif(10), runif(10))
+
+abline(h = c(0, 1), v = c(0, 1), lty = 2)
+text(0.05, 0.15, "par(xaxs = 'i', yaxs = 'i') eliminates the white area", adj = 0)
+box("plot", lty = "11")
+
+# 3. We create a subplot in an area
+
+plot.new()
+box("plot", lty = "11")
+abline(h = c(0.5, 0.8), v = c(0.5, 0.8), lty = 4)
+text(0.05, 0.3, 
+    "When mfrow is used,
+fig parameters refers to the complete screen
+and they have to be rescaled to the particular subscreen", adj = 0)
+
+
+par(fig = c(0.25, 0.4, 0.25, 0.4), new = TRUE)
+set.seed(1023)
+plot(runif(10), runif(10), xlim = c(0, 1), ylim = c(0, 1), axes = FALSE)
+box("plot", lty = "11", col = "red")
+
+# 4. rescale mai parameter to fully plot the complete plot in the subregion
+par(fig = c(0.5, 1, 0, 0.5), xaxs = op$xaxs, yaxs = op$xaxs, new = TRUE)
+# 0.83 is the factor to rescale margin as the figure area is split in 4 figures
+par(mai = 0.83 * op$mai)
+set.seed(1023)
+plot(runif(10), runif(10), xlim = c(0, 1), ylim = c(0, 1))
+box("figure", lty = 1, col = "red")
+```
+
+
+
+
+##fin
 The figure region dimensions, (width, height), in inches. If you set this, unlike S, you start a new plot.
 
-font
+
+```{r}
+par(op)
+par(fin = c(op$fin[1], op$fin[2] / 2) )
+# par(mai = op$mai)
+set.seed(1023)
+plot(runif(10), runif(10), xlim = c(0, 1), ylim = c(0, 1))
+box("figure", lty = 1, col = "red")
+```
+
+
+
+##font
 An integer which specifies which font to use for text. If possible, device drivers arrange so that 1 corresponds to plain text (the default), 2 to bold face, 3 to italic and 4 to bold italic. Also, font 5 is expected to be the symbol font, in Adobe symbol encoding. On some devices font families can be selected by family to choose different sets of 5 fonts.
 
 font.axis
@@ -325,10 +394,43 @@ The font to be used for plot main titles.
 font.sub
 The font to be used for plot sub-titles.
 
-lab
+
+```{r}
+par(op)
+par(font.lab = 4, font.sub = 3, font.axis = 2)
+set.seed(1023)
+plot(runif(10), runif(10)
+    , xlim = c(0, 1), ylim = c(0, 1)
+    , xlab = "x axis", ylab = "y axis font.lab = 4 (bold italic)"
+    , main = "10 random uniform points font.main = 2 (bold)"
+    , sub = "Example of font parameter font.sub = 3 (italic)")
+```
+
+
+
+
+##lab
 A numerical vector of the form c(x, y, len) which modifies the default way that axes are annotated. The values of x and y give the (approximate) number of tickmarks on the x and y axes and len specifies the label length. The default is c(5, 5, 7). Note that this only affects the way the parameters xaxp and yaxp are set when the user coordinate system is set up, and is not consulted when axes are drawn. len is unimplemented in R.
 
-las
+```{r}
+par(op)
+par(lab = c(4, 10, 7))
+set.seed(1023)
+plot(runif(10), runif(10)
+    , xlim = c(0, 1), ylim = c(0, 1)
+    , xlab = "x axis", ylab = "y axis"
+    , main = "lab parameter "
+    , sub = "lab parameter c(x, y, len) x: aprox ticks in x axis. len unimplemented")
+grid()
+text(0.1, 0.6, "Example with lab = c(4, 10, 7)", adj = 0, cex = 0.83)
+text(0.1, 0.5, "Default lab = c(5, 5, 7)", adj = 0, cex = 0.83)
+
+```
+
+
+
+
+##las
 numeric in {0,1,2,3}; the style of axis labels.
 
 0:
@@ -345,7 +447,44 @@ always vertical.
 
 Also supported by mtext. Note that string/character rotation via argument srt to par does not affect the axis labels.
 
-lend
+
+```{r}
+par(op)
+par(mfrow = c(2, 2))
+
+set.seed(1023)
+plot(runif(10), runif(10)
+    , xlim = c(0, 1), ylim = c(0, 1)
+    , xlab = "x axis", ylab = "y axis"
+    , main = "las = 0 (parallel to axis)")
+
+par(las = 1)
+set.seed(1023)
+plot(runif(10), runif(10)
+    , xlim = c(0, 1), ylim = c(0, 1)
+    , xlab = "x axis", ylab = "y axis"
+    , main = "las = 1 (always horizontal)")
+
+par(las = 2)
+set.seed(1023)
+plot(runif(10), runif(10)
+    , xlim = c(0, 1), ylim = c(0, 1)
+    , xlab = "x axis", ylab = "y axis"
+    , main = "las = 2 (perpendicular to axis)")
+
+par(las = 3)
+set.seed(1023)
+plot(runif(10), runif(10)
+    , xlim = c(0, 1), ylim = c(0, 1)
+    , xlab = "x axis", ylab = "y axis"
+    , main = "las = 3 (always vertical)")
+```
+
+
+
+
+
+##lend
 The line end style. This can be specified as an integer or string:
 
 0
@@ -357,10 +496,89 @@ and "butt" mean butt line caps;
 2
 and "square" mean square line caps.
 
-lheight
+
+```{r}
+par(op)
+
+
+plot(c(0,1), c(0, 0)
+    , type = "l"
+    , axes = FALSE
+    , xlab=NA, ylab = NA
+    , lwd = 11
+    , lend = 1
+    , main = "Parameter lend (line end) values")
+
+
+lines(c(0,1), c(0.7, 0.7)
+    , type = "l"
+    , lwd = 11
+    , lend = 0)
+
+lines(c(0,1), c(-0.7, -0.7)
+    , type = "l"
+    , lwd = 11
+    , lend = 2)
+
+text(0.5, 0.9, "lend = 0 (\"round\")")
+text(0.5, 0.2, "lend = 1 (\"butt\")")
+text(0.5, -0.5, "lend = 0 (\"square\")")
+
+mtext(side = 1
+    , text = paste("Based on a document by Melissa Clarkson:",
+    "http://www.melissaclarkson.com/resources/R_guides/documents/line_styles_Ver2.pdf", sep = "\n")
+    ,line = 2
+    ,at = 0
+    ,cex = 0.8
+    ,col = "blue"
+    ,adj = 0)
+
+```
+
+
+##lheight
 The line height multiplier. The height of a line of text (used to vertically space multi-line text) is found by multiplying the character height both by the current character expansion and by the line height multiplier. Default value is 1. Used in text and strheight.
 
-ljoin
+```{r}
+par(op)
+
+
+plot(c(0, 0, 0.5), c(0.8, 0.5, 0.3)
+    , type = "p"
+    , axes = FALSE
+    , xlab=NA, ylab = NA
+    , xlim = c(0, 1), ylim = c(0, 1)
+    , lend = 0
+    , pch = 19, col = "red")
+
+mtext(side = 3, line = 0.5, at = 0.5, font = 2, text = "Use of parameter lheight in multiline texts")
+box("plot", lty = 1, col = "red")
+
+text(0, 0.8
+    , paste("text with two lines at (0, 0.8)",
+    "lheight as default (1)", sep = "\n")
+    ,col = "blue"
+    ,adj = 0)
+
+par(lheight = 2)
+text(0, 0.5
+    , paste("same text with two lines at (0, 0.5)",
+    "lheight = 2", sep = "\n")
+    ,col = "blue"
+    ,adj = 0)
+
+par(lheight = 3)
+text(0.5, 0.3
+    , paste("Same text with two lines at (0.5, 0.3)",
+    "lheight = 3", sep = "\n")
+    ,col = "blue"
+    ,adj = 0)
+
+```
+
+
+
+##ljoin
 The line join style. This can be specified as an integer or string:
 
 0
@@ -372,34 +590,186 @@ and "mitre" mean mitred line joins;
 2
 and "bevel" mean bevelled line joins.
 
-lmitre
+```{r}
+par(op)
+
+x = c(-1, -1, -0.6, -1, -1)
+y = c(-1, -0.3, 0, 0.3, 1)
+
+par(lwd = 11, mar = rep(2, 4))
+plot(x, y
+    , type = "l"
+    , axes = FALSE
+    , xlab=NA, ylab = NA
+    , xlim = c(-1.5, 1.5), ylim = c(-1.5, 1.5)
+    , main = "Parameter ljoin")
+
+lines(x + 1, y
+    , type = "l"
+    , ljoin = 1)
+
+lines(x + 2, y
+    , type = "l"
+    , ljoin = 2)
+
+text(-1, 1.2, "ljoin = 0 (\"round\")")
+text(0, 1.2, "ljoin = 1 (\"mitre\")")
+text(1, 1.2, "ljoin = 2 (\"bevel\")")
+
+mtext(side = 1
+    , text = paste("Based on a document by Melissa Clarkson:",
+    "http://www.melissaclarkson.com/resources/R_guides/documents/line_styles_Ver2.pdf", sep = "\n")
+    ,line = 0
+    ,at = -1
+    ,cex = 0.8
+    ,col = "blue"
+    ,adj = 0)
+
+par(lwd = 1)
+rect(-0.8, -0.3, -0.4, 0.3, lty = "dotdash", border = "red")
+rect(0.2, -0.3, 0.6, 0.3, lty = "dotdash", border = "red")
+rect(1.2, -0.3, 1.6, 0.3, lty = "dotdash", border = "red")
+```
+
+##lmitre
 The line mitre limit. This controls when mitred line joins are automatically converted into bevelled line joins. The value must be larger than 1 and the default is 10. Not all devices will honour this setting.
 
-lty
+```{r}
+par(op)
+
+x = c(-1, -1, -0.6, -1, -1)
+y = c(-1, -0.3, 0, 0.3, 1)
+
+par(lwd = 21, mar = rep(2, 4))
+plot(x, y
+    , type = "l"
+    , axes = FALSE
+    , xlab=NA, ylab = NA
+    , xlim = c(-1.5, 1.5), ylim = c(-1.5, 1.5)
+    , main = "Parameter lmitre (only when ljoin = 1)", adj = 0
+    , ljoin = 1
+    , lmitre = 1)
+
+lines(x + 1, y
+    , type = "l"
+    , ljoin = 1)
+
+lines(x + 2, y
+    , type = "l"
+    , ljoin = 1
+    , lmitre = 30)
+
+text(-1, 1.2, "lmitre = 1")
+text(0, 1.2, "lmitre = 10 (default)")
+text(1, 1.2, "lmitre = 30")
+mtext(side = 1
+    , text = "Note: It looks like lmitre controls when mitre becomes bevel"
+    ,line = -2
+    ,at = -1
+    ,adj = 0)
+
+mtext(side = 1
+    , text = paste("Inspired by Dieter Menne",
+    "http://stackoverflow.com/questions/23060394/what-do-plot-options-ljoin-and-lmitre-do", sep = "\n")
+    ,line = 0
+    ,at = -1
+    ,cex = 0.8
+    ,col = "blue"
+    ,adj = 0)
+
+par(lwd = 1)
+rect(-0.8, -0.3, -0.4, 0.3, lty = "dotdash", border = "red")
+rect(0.2, -0.3, 0.6, 0.3, lty = "dotdash", border = "red")
+rect(1.2, -0.3, 1.6, 0.3, lty = "dotdash", border = "red")
+```
+
+
+##lty
 The line type. Line types can either be specified as an integer (0=blank, 1=solid (default), 2=dashed, 3=dotted, 4=dotdash, 5=longdash, 6=twodash) or as one of the character strings "blank", "solid", "dashed", "dotted", "dotdash", "longdash", or "twodash", where "blank" uses ‘invisible lines’ (i.e., does not draw them).
 
 Alternatively, a string of up to 8 characters (from c(1:9, "A":"F")) may be given, giving the length of line segments which are alternatively drawn and skipped. See section ‘Line Type Specification’.
 
 Functions such as lines and segments accept a vector of values which are recycled.
 
-lwd
+```{r}
+par(op)
+par(mar = c(2, 2, 2, 1))
+par(mfrow = c(1, 2), lab = c(10, 10, 7))
+
+plot(1, 1
+    , type = "n"
+    , axes = FALSE
+    , xlab = NA, ylab = NA
+    , xlim = c(0, 10), ylim = c(0, 10))
+# grid(lwd = 2)
+lty_string <- c("blank", "solid", "dashed", "dotted", "dotdash", "longdash", "twodash")
+for (k in 0:6){
+    text(0, 6.5- k, labels = paste(k, lty_string[k + 1]), adj = c(0, 0))
+    segments(4, 6.5 - k, 9, 6.5 - k, lty = k, lwd = 2)
+}
+mtext(side = 3, line = 0.5, at = 11, "Line styles (lty parameter)", font = 2)
+text(1, 10, labels = "Pre-set styles", font = 2, adj = 0)
+text(1, 9.5, paste("Seven pre-set styles,",
+    "specified by either their integer or name", "(default = “solid”)", sep = "\n")
+    , cex = 0.8,  adj = c(0, 1))
+
+plot(1, type = "n", axes = FALSE
+    , xlab = NA, ylab = NA
+    , xlim = c(0, 10), ylim = c(0, 10))
+# grid(lwd = 2, col = "red")
+text(1, 10, labels = "String styles", font = 2, adj = 0)
+text(1, 9.5, paste("Patterns of on/off can also be specified",
+    "with strings of 2, 4, 6, or 8 characters",
+    "(non-zero hexadecimal characters,", "1–9 and a–f)"
+    , sep = "\n")
+    , cex = 0.8, adj = c(0, 1))
+lty_string <- c("aa", "1342", "44", "13", "1343", "73", "2262")
+for (k in 0:6){
+    text(0, 6.5- k, labels = paste0("\"", lty_string[k + 1], "\""), adj = c(0, 0))
+    segments(4, 6.5 - k, 9, 6.5 - k, lty = lty_string[k + 1], lwd = 2)
+}
+```
+
+
+##lwd
 The line width, a positive number, defaulting to 1. The interpretation is device-specific, and some devices do not implement line widths less than one. (See the help on the device for details of the interpretation.)
 
 Functions such as lines and segments accept a vector of values which are recycled: in such uses lines corresponding to values NA or NaN are omitted. The interpretation of 0 is device-specific.
 
-mai
+##mai
 A numerical vector of the form c(bottom, left, top, right) which gives the margin size specified in inches.
 Figure: mai.png
 
-mar
+## mar
 A numerical vector of the form c(bottom, left, top, right) which gives the number of lines of margin to be specified on the four sides of the plot. The default is c(5, 4, 4, 2) + 0.1.
 
-mex
+```{r}
+par(op)
+set.seed(1023)
+plot(runif(10), runif(10), type = 'n', axes = FALSE, xlim = c(0, 1), ylim = c(0, 1),
+    xlab = '', ylab = '')
+text(0.5, 0.5, paste0("op$mar = (", paste(op$mar, collapse = ", "), ")"))
+box("plot", lty = "44")
+for(k in 0:4){
+    mtext(paste0("line ", k), line = k, side = 1)
+}
+for(k in 0:3){
+    mtext(paste0("line ", k), line = k, side = 2)
+}
+for(k in 0:1){
+    mtext(paste0("line ", k), line = k, side = 3)
+}
+for(k in 0:1){
+    mtext(paste0("line ", k), line = k, side = 4)
+}
+```
+
+##mex
 mex is a character size expansion factor which is used to describe coordinates in the margins of plots. Note that this does not change the font size, rather specifies the size of font (as a multiple of csi) used to convert between mar and mai, and between oma and omi.
 
 This starts as 1 when the device is opened, and is reset when the layout is changed (alongside resetting cex).
 
-mfcol, mfrow
+##mfcol, mfrow
 A vector of the form c(nr, nc). Subsequent figures will be drawn in an nr-by-nc array on the device by columns (mfcol), or rows (mfrow), respectively.
 
 In a layout with exactly two rows and columns the base value of "cex" is reduced by a factor of 0.83: if there are three or more of either rows or columns, the reduction factor is 0.66.
@@ -410,68 +780,68 @@ If either of these is queried it will give the current layout, so querying canno
 
 Consider the alternatives, layout and split.screen.
 
-mfg
+##mfg
 A numerical vector of the form c(i, j) where i and j indicate which figure in an array of figures is to be drawn next (if setting) or is being drawn (if enquiring). The array must already have been set by mfcol or mfrow.
 
 For compatibility with S, the form c(i, j, nr, nc) is also accepted, when nr and nc should be the current number of rows and number of columns. Mismatches will be ignored, with a warning.
 
-mgp
+##mgp
 The margin line (in mex units) for the axis title, axis labels and axis line. Note that mgp[1] affects title whereas mgp[2:3] affect axis. The default is c(3, 1, 0).
 
-mkh
+##mkh
 The height in inches of symbols to be drawn when the value of pch is an integer. Completely ignored in R.
 
-new
+##new
 logical, defaulting to FALSE. If set to TRUE, the next high-level plotting command (actually plot.new) should not clean the frame before drawing as if it were on a new device. It is an error (ignored with a warning) to try to use new = TRUE on a device that does not currently contain a high-level plot.
 
-oma
+##oma
 A vector of the form c(bottom, left, top, right) giving the size of the outer margins in lines of text.
 Figure: oma.png
 
-omd
+##omd
 A vector of the form c(x1, x2, y1, y2) giving the region inside outer margins in NDC (= normalized device coordinates), i.e., as a fraction (in [0, 1]) of the device region.
 
-omi
+##omi
 A vector of the form c(bottom, left, top, right) giving the size of the outer margins in inches.
 
-page
+##page
 R.O.; A boolean value indicating whether the next call to plot.new is going to start a new page. This value may be FALSE if there are multiple figures on the page.
 
-pch
+##pch
 Either an integer specifying a symbol or a single character to be used as the default in plotting points. See points for possible values and their interpretation. Note that only integers and single-character strings can be set as a graphics parameter (and not NA nor NULL).
 
 Some functions such as points accept a vector of values which are recycled.
 
-pin
+##pin
 The current plot dimensions, (width, height), in inches.
 
-plt
+##plt
 A vector of the form c(x1, x2, y1, y2) giving the coordinates of the plot region as fractions of the current figure region.
 
-ps
+##ps
 integer; the point size of text (but not symbols). Unlike the pointsize argument of most devices, this does not change the relationship between mar and mai (nor oma and omi).
 
 What is meant by ‘point size’ is device-specific, but most devices mean a multiple of 1bp, that is 1/72 of an inch.
 
-pty
+##pty
 A character specifying the type of plot region to be used; "s" generates a square plotting region and "m" generates the maximal plotting region.
 
-smo
+##smo
 (Unimplemented) a value which indicates how smooth circles and circular arcs should be.
 
-srt
+##srt
 The string rotation in degrees. See the comment about crt. Only supported by text.
 
-tck
+##tck
 The length of tick marks as a fraction of the smaller of the width or height of the plotting region. If tck >= 0.5 it is interpreted as a fraction of the relevant side, so if tck = 1 grid lines are drawn. The default setting (tck = NA) is to use tcl = -0.5.
 
-tcl
+##tcl
 The length of tick marks as a fraction of the height of a line of text. The default value is -0.5; setting tcl = NA sets tck = -0.01 which is S' default.
 
-usr
+##usr
 A vector of the form c(x1, x2, y1, y2) giving the extremes of the user coordinates of the plotting region. When a logarithmic scale is in use (i.e., par("xlog") is true, see below), then the x-limits will be 10 ^ par("usr")[1:2]. Similarly for the y-axis.
 
-xaxp
+##xaxp
 A vector of the form c(x1, x2, n) giving the coordinates of the extreme tick marks and the number of intervals between tick-marks when par("xlog") is false. Otherwise, when log coordinates are active, the three values have a different meaning: For a small range, n is negative, and the ticks are as in the linear case, otherwise, n is in 1:3, specifying a case number, and x1 and x2 are the lowest and highest power of 10 inside the user coordinates, 10 ^ par("usr")[1:2]. (The "usr" coordinates are log10-transformed here!)
 
 n = 1
@@ -489,7 +859,7 @@ This parameter is reset when a user coordinate system is set up, for example by 
 
 It is only relevant to default numeric axis systems, and not for example to dates.
 
-xaxs
+##xaxs
 The style of axis interval calculation to be used for the x-axis. Possible values are "r", "i", "e", "s", "d". The styles are generally controlled by the range of data or xlim, if given.
 Style "r" (regular) first extends the data range by 4 percent at each end and then finds an axis with pretty labels that fits within the extended range.
 Style "i" (internal) just finds an axis with pretty labels that fits within the original data range.
@@ -498,53 +868,32 @@ Style "e" (extended) is like style "s", except that it is also ensures that ther
 Style "d" (direct) specifies that the current axis should be used on subsequent plots.
 (Only "r" and "i" styles have been implemented in R.)
 
-xaxt
+##xaxt
 A character which specifies the x axis type. Specifying "n" suppresses plotting of the axis. The standard value is "s": for compatibility with S values "l" and "t" are accepted but are equivalent to "s": any value other than "n" implies plotting.
 
-xlog
+##xlog
 A logical value (see log in plot.default). If TRUE, a logarithmic scale is in use (e.g., after plot(*, log = "x")). For a new device, it defaults to FALSE, i.e., linear scale.
 
-xpd
+##xpd
 A logical value or NA. If FALSE, all plotting is clipped to the plot region, if TRUE, all plotting is clipped to the figure region, and if NA, all plotting is clipped to the device region. See also clip.
 
-yaxp
+##yaxp
 A vector of the form c(y1, y2, n) giving the coordinates of the extreme tick marks and the number of intervals between tick-marks unless for log coordinates, see xaxp above.
 
-yaxs
+##yaxs
 The style of axis interval calculation to be used for the y-axis. See xaxs above.
 
-yaxt
+##yaxt
 A character which specifies the y axis type. Specifying "n" suppresses plotting.
 
-ylbias
+##ylbias
 A positive real value used in the positioning of text in the margins by axis and mtext. The default is in principle device-specific, but currently 0.2 for all of R's own devices. Set this to 0.2 for compatibility with R < 2.14.0 on x11 and windows() devices.
 
-ylog
+##ylog
 A logical value; see xlog above.
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-####################
+## Extra material
 
 ### mar and mai
 mai:
