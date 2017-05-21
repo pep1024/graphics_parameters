@@ -736,32 +736,74 @@ The line width, a positive number, defaulting to 1. The interpretation is device
 
 Functions such as lines and segments accept a vector of values which are recycled: in such uses lines corresponding to values NA or NaN are omitted. The interpretation of 0 is device-specific.
 
+
+```{r}
+# clean plot area to start drawing
+par(mar = rep(0, 4), lend = 1)
+plot(1, 1
+    , type = 'n', axes = FALSE, ann = FALSE
+    , xaxs = 'i', yaxs = 'i'
+    , xlim = c(0,10), ylim = c(0,10)
+    , lab = c(10, 10, 7))
+# grid()
+text(5, 9.5, "Line width parameter (lwd)", font = 2, adj = c(0.5, 0))
+for (k in 1:9){
+    text(0.5, k, labels = paste0("lwd = ", k), adj = c(0, 0))
+    segments(1.5, k, 9, k, lwd = k)
+}
+```
+
+
 ##mai
 A numerical vector of the form c(bottom, left, top, right) which gives the margin size specified in inches.
-Figure: mai.png
 
 ## mar
 A numerical vector of the form c(bottom, left, top, right) which gives the number of lines of margin to be specified on the four sides of the plot. The default is c(5, 4, 4, 2) + 0.1.
 
+
+
+
 ```{r}
 par(op)
+
+# start by plotting a normal plot with standard parameter but in light colors
+plot_color = "lightgray"
+par( col.main= plot_color
+    , col.lab = plot_color
+    , col.sub = plot_color
+    , col.axis = plot_color
+    , fg = plot_color)
 set.seed(1023)
-plot(runif(10), runif(10), type = 'n', axes = FALSE, xlim = c(0, 1), ylim = c(0, 1),
+plot(runif(10), runif(10)
+    , type = 'p', xlim = c(0, 1), ylim = c(0, 1),
+    xlab = "x axis label", ylab = "y axis label"
+    , main = "Plot Title"
+    , sub = "Plot Subtitle")
+
+par(op)
+par(new = TRUE)
+plot(0.5, 0.5, type = 'n', axes = FALSE, xlim = c(0, 1), ylim = c(0, 1),
     xlab = '', ylab = '')
-text(0.5, 0.5, paste0("op$mar = (", paste(op$mar, collapse = ", "), ")"))
+text(0.2, 0.6, "Default value for op$mai and op$mar", adj = 0)
+text(0.2, 0.5, paste0("op$mar = c(", paste(op$mar - 0.1, collapse = ", "), ") + 0.1"), adj = 0)
+text(0.2, 0.4, paste0("op$mai = c(", paste(op$mai, collapse = ", "), ")"), adj = 0)
+
 box("plot", lty = "44")
+box("figure", col = "red")
+rect(0, 0, 1, 1, lty = 3, border = "blue")
 for(k in 0:4){
-    mtext(paste0("line ", k), line = k, side = 1)
+    mtext(paste0("line ", k), line = k, at = 0.3, side = 1)
 }
 for(k in 0:3){
-    mtext(paste0("line ", k), line = k, side = 2)
+    mtext(paste0("line ", k), line = k, at = 0.1, side = 2)
 }
 for(k in 0:1){
-    mtext(paste0("line ", k), line = k, side = 3)
+    mtext(paste0("line ", k), line = k, at = 0.3, side = 3)
 }
 for(k in 0:1){
     mtext(paste0("line ", k), line = k, side = 4)
 }
+text(0.1, 0.9, "Area limited by xlim and ylim", col = "blue", cex = 0.8, adj = 0)
 ```
 
 ##mex
@@ -943,4 +985,36 @@ abline(v = c(seq(0, 1, 0.1)), h = c(seq(0, 1, 0.1)), lty = 2)
 par(plt = c(0.1, 0.3, 0.5, 0.8))
 box(lty = '1111', col = 'blue' )
 abline(v = c(seq(0, 1, 0.1)), h = c(seq(0, 1, 0.1)), lty = 1, col = "green")
+```
+
+```{r}
+# clean plot area to start drawing
+par(mar = rep(0, 4))
+plot(1, 1
+    , type = 'n', axes = FALSE, ann = FALSE
+    , xaxs = 'i', yaxs = 'i'
+    , xlim = c(0,10), ylim = c(0,10)
+    , lab = c(10, 10, 7))
+grid()
+par(op)
+```
+
+```{r}
+par(op)
+
+# start by plotting a normal plot with standard parameter but in light colors
+plot_color = "lightgray"
+par( col.main= plot_color
+    , col.lab = plot_color
+    , col.sub = plot_color
+    , col.axis = plot_color
+    , fg = plot_color)
+set.seed(1023)
+plot(runif(10), runif(10)
+    , type = 'p', xlim = c(0, 1), ylim = c(0, 1),
+    xlab = "x axis label", ylab = "y axis label"
+    , main = "Plot Title"
+    , sub = "Plot Subtitle")
+
+
 ```
