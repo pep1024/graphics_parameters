@@ -1,19 +1,28 @@
 ---
-title: "Plot Parameters"
+title: "Graphical parameters of {graphics} package"
 author: "Pep Porrà"
 date: "March 25th, 2017"
-output: html_document
+output: 
+    html_document:
+        toc: true
+        toc_depth: 2
+        toc_float: true
+        code_folding: hide
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-I give examples of use for each parameter in the par function base {graphics} package. The text that follows after each parameter is the text shown in the par function help.
+This document gives examples of use for each parameter of the par function in base {graphics} package. The text that follows after each parameter is the text shown in the par function help.
 
-We save first the value of all parameters (those that can be changed) into a variable to be able to reset them to the intial state
+Before starting with the examples for each parameter, we save first the value of all parameters (those that can be changed) into a variable to be able to reset them to the initial state.
 
-```{r}
+```
+op <- par(no.readonly = TRUE)
+```
+
+```{r, echo = TRUE}
 op <- par(no.readonly = TRUE)
 ```
 
@@ -24,11 +33,12 @@ Note that the adj argument of text also allows adj = c(x, y) for different adjus
 
 ```{r}
 plot(c(0.4, rep(0.5, 3)), c(0.4, 0.2, 0.5, 0.8),
-     xlab = "", ylab = "", xaxt = 'n', yaxt = 'n',
-     xlim = c(0, 1), ylim = c(0, 1))
+    xlab = "", ylab = "", xaxt = 'n', yaxt = 'n',
+    xlim = c(0, 1), ylim = c(0, 1),
+    pch = 20)
 
 par(adj = 0)
-title("Adj parameter (=0 in this title)")
+title("Adj parameter: par(adj=0) in this title")
 text(0.5, 0.8, "(0.5, 0.8) adj = 0")
 par(adj = 0.5)
 text(0.5, 0.5, "(0.5, 0.5) adj = 0.5")
@@ -61,7 +71,7 @@ mtext("ann parameter = FALSE", side = 1, line = 2, cex = 0.7)
 ##ask
 logical. If TRUE (and the R session is interactive) the user is asked for input, before a new figure is drawn. As this applies to the device, it also affects output by packages grid and lattice. It can be set even on non-screen devices but may have no effect there.
 
-This not really a graphics parameter, and its use is deprecated in favour of devAskNewPage.
+This not really a graphics parameter, and its use is deprecated in favor of devAskNewPage.
 
 ##bg
 The color to be used for the background of the device region. When called from par() it also sets new = FALSE. See section ‘Color Specification’ for suitable values. For many devices the initial value is set from the bg argument of the device, and for the rest it is normally "white".
@@ -188,16 +198,16 @@ A specification for the default plotting color. See section ‘Color Specificati
 
 Some functions such as lines and text accept a vector of values which are recycled and may be interpreted slightly differently.
 
-col.axis
+###col.axis
 The color to be used for axis annotation. Defaults to "black".
 
-col.lab
+###col.lab
 The color to be used for x and y labels. Defaults to "black".
 
-col.main
+###col.main
 The color to be used for plot main titles. Defaults to "black".
 
-col.sub
+###col.sub
 The color to be used for plot sub-titles. Defaults to "black".
 
 
@@ -255,7 +265,7 @@ mtext("crt is ignired in screen device", line = 2, side = 1)
 
 
 ##family
-The name of a font family for drawing text. The maximum allowed length is 200 bytes. This name gets mapped by each graphics device to a device-specific font description. The default value is "" which means that the default device fonts will be used (and what those are should be listed on the help page for the device). Standard values are "serif", "sans" and "mono", and the Hershey font families are also available. (Devices may define others, and some devices will ignore this setting completely. Names starting with "Hershey" are treated specially and should only be used for the built-in Hershey font families.) This can be specified inline for text.
+The name of a font family for drawing text. The maximum allowed length is 200 bytes. This name gets mapped by each graphics device to a device-specific font description. The default value is "" which means that the default device fonts will be used (and what those are should be listed on the help page for the device). Standard values are "serif", "sans" and "mono", and the Hershey font families are also available. (Devices may define others, and some devices will ignore this setting completely. Names starting with "Hershey" are treated specially and should only be used for the built-in Hershey font families.) This can be specified inline for text. Example details: [http://www.statmethods.net/advgraphs/parameters.html](http://www.statmethods.net/advgraphs/parameters.html)
 
 
 ```{r}
@@ -281,10 +291,10 @@ text(1, 6, paste("TT Courier New,family", par("family")))
 par(family = "sans")
 text(1, 5, paste("TT Arial, family", par("family")))
 
-text(1, 1, family="A", "Font: Arial Black")
-text(1, 2, family="B", "Font: Bookman Old Style")
-text(1, 3, family="C", "Font: Comic Sans MS")
-text(1, 4, family="D", "Font: Symbol")
+text(1, 1, family = "A", "Font: Arial Black")
+text(1, 2, family = "B", "Font: Bookman Old Style")
+text(1, 3, family = "C", "Font: Comic Sans MS")
+text(1, 4, family = "D", "Font: Symbol")
 
 mtext("Example from: http://www.statmethods.net/advgraphs/parameters.html",
       line = 2, side = 1)
@@ -307,59 +317,49 @@ plot(runif(10), runif(10),
 A numerical vector of the form c(x1, x2, y1, y2) which gives the (NDC) coordinates of the figure region in the display region of the device. If you set this, unlike S, you start a new plot, so to add to an existing plot use new = TRUE as well.
 
 ```{r}
-par(mfrow = c(2, 2))
+plot_dim <- function(x, y, op, title, ...){
+    text(x, y, paste0("mar = c(", paste(op$mar, collapse = ", "), ")"), adj = 0, ...)
+    text(x, y + 0.05, paste0("mai = c(", paste(op$mai, collapse = ", "), ")"), adj = 0, ...)
+    text(x, y + 0.1, paste0("fig = c(", paste(round(op$fig, 2), collapse = ", "), ")")
+        , adj = 0, ...)
+    text(x, y + 0.15, paste0("fin = c(", paste(round(op$fin, 2), collapse = ", "), ")")
+        , adj = 0, ...)
+    text(x, y + 0.2, paste0("plt = c(", paste(round(op$plt, 2), collapse = ", "), ")")
+        , adj = 0, ...)
+    text(x, y + 0.25, paste0("pin = c(", paste(round(op$pin, 2), collapse = ", "), ")")
+        , adj = 0, ...)
+    text(x, y + 0.3, title, adj = 0, ...)
+}
 
-# Create a subwindow
+par(op)
+
 # 1. plot area available when internal margins are 0
-par(mai = c(0, 0, 0, 0))
-
-set.seed(1023)
-plot(runif(10), runif(10), type = 'n', 
-    yaxt = 'n', xaxt = 'n', xlab = '', ylab = '', xlim = c(0, 1), ylim = c(0, 1))
-rect(0,0,1,1, col = "salmon")
-points(runif(10), runif(10))
-
-abline(h = c(0, 1), v = c(0, 1), lty = 2)
-text(0.05, 0.15, "Note that the plot area has the extensions \nbeyond x=c(0,1) and y=c(0,1); white area", adj = 0)
-box("plot", lty = "11")
-
-# 2. Parameter to delete extra space
-par(xaxs = 'i', yaxs = 'i')
-
-set.seed(1023)
-plot(runif(10), runif(10), type = 'n', 
-    yaxt = 'n', xaxt = 'n', xlab = '', ylab = '', xlim = c(0, 1), ylim = c(0, 1))
-rect(0,0,1,1, col = "salmon")
-points(runif(10), runif(10))
-
-abline(h = c(0, 1), v = c(0, 1), lty = 2)
-text(0.05, 0.15, "par(xaxs = 'i', yaxs = 'i') eliminates the white area", adj = 0)
-box("plot", lty = "11")
-
-# 3. We create a subplot in an area
-
+par(mai = c(0, 0, 0, 0), xaxs = 'i', yaxs = 'i')
 plot.new()
-box("plot", lty = "11")
-abline(h = c(0.5, 0.8), v = c(0.5, 0.8), lty = 4)
-text(0.05, 0.3, 
-    "When mfrow is used,
-fig parameters refers to the complete screen
-and they have to be rescaled to the particular subscreen", adj = 0)
+abline(h = c(0.4, 0.9), v = c(0.4, 0.9), lty = 4)
+rect(0.4, 0.4, 0.9, 0.9, border = "red")
+par(op)
 
+# 2. Plot new fig
+newfig <- c(0.4, 0.9, 0.4, 0.9)
+par(fig = newfig, new = TRUE)
+op_reduced <- par(no.readonly = TRUE)
+plot(runif(10), runif(10), typ = 'p', 
+    xlab = 'X', ylab = 'Y', xlim = c(0, 1), ylim = c(0, 1))
+par(op)
+par(mai = c(0, 0, 0, 0), xaxs = 'i', yaxs = 'i', new = TRUE)
 
-par(fig = c(0.25, 0.4, 0.25, 0.4), new = TRUE)
-set.seed(1023)
-plot(runif(10), runif(10), xlim = c(0, 1), ylim = c(0, 1), axes = FALSE)
-box("plot", lty = "11", col = "red")
-
-# 4. rescale mai parameter to fully plot the complete plot in the subregion
-par(fig = c(0.5, 1, 0, 0.5), xaxs = op$xaxs, yaxs = op$xaxs, new = TRUE)
-# 0.83 is the factor to rescale margin as the figure area is split in 4 figures
-par(mai = 0.83 * op$mai)
-set.seed(1023)
-plot(runif(10), runif(10), xlim = c(0, 1), ylim = c(0, 1))
-box("figure", lty = 1, col = "red")
+# 3. Info about dimensions
+plot.new()
+plot_dim(0.05, 0.5, op_reduced,"New plot dimension on the right", cex = 0.9)
+plot_dim(0.5, 0.05, op, "Default plot dimensions", cex = 0.7 )
 ```
+
+
+
+
+
+
 
 
 
@@ -367,31 +367,52 @@ box("figure", lty = 1, col = "red")
 ##fin
 The figure region dimensions, (width, height), in inches. If you set this, unlike S, you start a new plot.
 
-
 ```{r}
+plot_dimensions <- function(x){
+    stopifnot(par("mar")[1] >= 4)
+    mtext(paste0("mar = c(", paste(round(x[["mar"]], 2), collapse = ", "), ")")
+        , side = 1, at = 0, line = 0, cex = 0.8, adj = 0)
+    mtext(paste0("mai = c(", paste(round(x[["mai"]], 2), collapse = ", "), ")")
+        , side = 1, at = 0, line = 1, cex = 0.8, adj = 0)
+    mtext(paste0("fig = c(", paste(round(x[["fig"]], 2), collapse = ", "), ")")
+        , side = 1, at = 0, line = 2, cex = 0.8, adj = 0)
+    mtext(paste0("fin = c(", paste(round(x[["fin"]], 2), collapse = ", "), ")")
+        , side = 1, at = 0, line = 3, cex = 0.8, adj = 0)
+    mtext(paste0("plt = c(", paste(round(x[["plt"]], 2), collapse = ", "), ")")
+        , side = 1, at = 0.5, line = 0, cex = 0.8, adj = 0)
+    mtext(paste0("pin = c(", paste(round(x[["pin"]], 2), collapse = ", "), ")")
+        , side = 1, at = 0.5, line = 1, cex = 0.8, adj = 0)
+}
 par(op)
-par(fin = c(op$fin[1], op$fin[2] / 2) )
-# par(mai = op$mai)
-set.seed(1023)
-plot(runif(10), runif(10), xlim = c(0, 1), ylim = c(0, 1))
-box("figure", lty = 1, col = "red")
-```
 
+oldpar <- par(fin = c(op$fin[1]*0.8, op$fin[2] / 2) )
+opnew <- par()
+set.seed(1023)
+plot(runif(10), runif(10), xlim = c(0, 1), ylim = c(0, 1),
+    main = "Example of fin parameter")
+box("figure", lty = 1, col = "red")
+par(oldpar)
+
+# box("plot", lty = "dashed", col = "blue")
+plot_dimensions(opnew)
+mtext("Witdh parameter = par(\"fin\")[1]*0.8, Height parameter = par(\"fin\")[2]/2"
+    , side = 3, at = -0.1, line = 0, font = 2, cex = 1, adj = 0)
+```
 
 
 ##font
 An integer which specifies which font to use for text. If possible, device drivers arrange so that 1 corresponds to plain text (the default), 2 to bold face, 3 to italic and 4 to bold italic. Also, font 5 is expected to be the symbol font, in Adobe symbol encoding. On some devices font families can be selected by family to choose different sets of 5 fonts.
 
-font.axis
+###font.axis
 The font to be used for axis annotation.
 
-font.lab
+###font.lab
 The font to be used for x and y labels.
 
-font.main
+###font.main
 The font to be used for plot main titles.
 
-font.sub
+###font.sub
 The font to be used for plot sub-titles.
 
 
@@ -405,9 +426,6 @@ plot(runif(10), runif(10)
     , main = "10 random uniform points font.main = 2 (bold)"
     , sub = "Example of font parameter font.sub = 3 (italic)")
 ```
-
-
-
 
 ##lab
 A numerical vector of the form c(x, y, len) which modifies the default way that axes are annotated. The values of x and y give the (approximate) number of tickmarks on the x and y axes and len specifies the label length. The default is c(5, 5, 7). Note that this only affects the way the parameters xaxp and yaxp are set when the user coordinate system is set up, and is not consulted when axes are drawn. len is unimplemented in R.
@@ -760,11 +778,93 @@ A numerical vector of the form c(bottom, left, top, right) which gives the margi
 ## mar
 A numerical vector of the form c(bottom, left, top, right) which gives the number of lines of margin to be specified on the four sides of the plot. The default is c(5, 4, 4, 2) + 0.1.
 
+```{r}
+par(op)
+# start by plotting plt parameter values
+# and fin 
+par(mar = rep(0, 4))
 
+plot(1, 1
+    , type = 'n', axes = FALSE, ann = FALSE
+    , xaxs = 'i', yaxs = 'i'
+    , xlim = c(0,10), ylim = c(0,10)
+    , lab = c(10, 10, 7))
+abline(v = op$plt[1:2] * 10, h = op$plt[3:4] * 10, lty = 1, col = "red")
+arrows(0, 1.5, op$plt[1]*10, 1.5, code = 3, length = 0.1)
+arrows(op$plt[2] * 10, 1.5, 10, 1.5, code = 3, length = 0.1)
+arrows(6, 0, 6, op$plt[3]*10, code = 3, length = 0.1)
+arrows(6, op$plt[4]*10, 6, 10, code = 3, length = 0.1)
+text(0.2, 1, "mai[2]", cex = 0.8, adj = 0)
+text(6.5, 1, "mai[1]", cex = 0.8, adj = 0)
+text(9.3, 1, "mai[4]", cex = 0.8, adj = 0)
+text(6.5, 9.5, "mai[3]", cex = 0.8, adj = 0)
+
+# start by plotting a normal plot with standard parameter but in light colors
+plot_color = "lightgray"
+par(col.main= plot_color
+    , col.lab = plot_color
+    , col.sub = plot_color
+    , col.axis = plot_color
+    , fg = plot_color
+    , new = TRUE
+    , mar = op$mar)
+set.seed(1023)
+plot(runif(10), runif(10)
+    , type = 'p'
+    , xlim = c(0, 1), ylim = c(0, 1)
+    , xlab = "x axis label", ylab = "y axis label"
+    , main = "Plot Title"
+    , sub = "Plot Subtitle")
+
+plot_color = "black"
+par(col.main= plot_color
+    , col.lab = plot_color
+    , col.sub = plot_color
+    , col.axis = plot_color
+    , fg = plot_color, new = TRUE)
+plot(0.5, 0.5, type = 'n', axes = FALSE, xlim = c(0, 1), ylim = c(0, 1),
+    xlab = '', ylab = '')
+text(0.1, 0.6, "Default value for mai, mar, fin, plt", adj = 0)
+text(0.1, 0.5, paste0("mar = c(", paste(par("mar") - 0.1, collapse = ", "), ") + 0.1"), adj = 0)
+text(0.1, 0.4, paste0("mai = c(", paste(par("mai"), collapse = ", "), ")"), adj = 0)
+text(0.1, 0.3, paste0("fin = c(", paste(round(par("fin"), 2), collapse = ", "), ")"), adj = 0)
+text(0.1, 0.2, paste0("plt = c(", paste(round(par("plt"), 2), collapse = ", "), ")"), adj = 0)
+text(0.1, 0.1, paste0("mex = c(", paste(round(par("mex"), 2), collapse = ", "), ")"), adj = 0)
+
+
+text(0.7, 0.5, "mai[1] = fin[2] * plt[3]", cex = 0.8, col ="blue", adj = 0)
+text(0.7, 0.4, "mai[2] = fin[1] * plt[1]", cex = 0.8, col ="blue", adj = 0)
+text(0.7, 0.3, "mai[3] = fin[2] * (1 - plt[4])", cex = 0.8, col ="blue", adj = 0)
+text(0.7, 0.2, "mai[4] = fin[1] * (1 - plt[2])", cex = 0.8, col ="blue", adj = 0)
+
+
+box("plot", lty = "44")
+box("figure", col = "red")
+rect(0, 0, 1, 1, lty = 3, border = "blue")
+for(k in 0:4){
+    mtext(paste0("line ", k), line = k, at = 0.3, side = 1)
+}
+for(k in 0:3){
+    mtext(paste0("line ", k), line = k, at = 0.1, side = 2)
+}
+for(k in 0:1){
+    mtext(paste0("line ", k), line = k, at = 0.3, side = 3)
+}
+for(k in 0:1){
+    mtext(paste0("line ", k), line = k, side = 4)
+}
+text(0.05, 0.95, "Area limited by xlim and ylim", col = "blue", cex = 0.8, adj = 0)
+```
+
+##mex
+mex is a character size expansion factor which is used to describe coordinates in the margins of plots. Note that this does not change the font size, rather specifies the size of font (as a multiple of csi) used to convert between mar and mai, and between oma and omi.
+
+This starts as 1 when the device is opened, and is reset when the layout is changed (alongside resetting cex).
 
 
 ```{r}
 par(op)
+par(mex = 1.5)
 
 # start by plotting a normal plot with standard parameter but in light colors
 plot_color = "lightgray"
@@ -779,14 +879,14 @@ plot(runif(10), runif(10)
     xlab = "x axis label", ylab = "y axis label"
     , main = "Plot Title"
     , sub = "Plot Subtitle")
-
 par(op)
-par(new = TRUE)
+par(new = TRUE, par(mex = 1.5))
+
 plot(0.5, 0.5, type = 'n', axes = FALSE, xlim = c(0, 1), ylim = c(0, 1),
     xlab = '', ylab = '')
-text(0.2, 0.6, "Default value for op$mai and op$mar", adj = 0)
-text(0.2, 0.5, paste0("op$mar = c(", paste(op$mar - 0.1, collapse = ", "), ") + 0.1"), adj = 0)
-text(0.2, 0.4, paste0("op$mai = c(", paste(op$mai, collapse = ", "), ")"), adj = 0)
+text(0.2, 0.6, "change in op$mai and op$mar when op$mex = 1.5", adj = 0)
+text(0.2, 0.5, paste0("op$mar = c(", paste(par("mar") - 0.1, collapse = ", "), ") + 0.1"), adj = 0)
+text(0.2, 0.4, paste0("op$mai = c(", paste(par("mai"), collapse = ", "), ")"), adj = 0)
 
 box("plot", lty = "44")
 box("figure", col = "red")
@@ -806,10 +906,6 @@ for(k in 0:1){
 text(0.1, 0.9, "Area limited by xlim and ylim", col = "blue", cex = 0.8, adj = 0)
 ```
 
-##mex
-mex is a character size expansion factor which is used to describe coordinates in the margins of plots. Note that this does not change the font size, rather specifies the size of font (as a multiple of csi) used to convert between mar and mai, and between oma and omi.
-
-This starts as 1 when the device is opened, and is reset when the layout is changed (alongside resetting cex).
 
 ##mfcol, mfrow
 A vector of the form c(nr, nc). Subsequent figures will be drawn in an nr-by-nc array on the device by columns (mfcol), or rows (mfrow), respectively.
@@ -822,13 +918,152 @@ If either of these is queried it will give the current layout, so querying canno
 
 Consider the alternatives, layout and split.screen.
 
+```{r}
+par(op)
+par(mfrow = c(3,2))
+
+for(k in 1:6){
+set.seed(1023)
+plot(runif(10), runif(10)
+    , xlim = c(0, 1), ylim = c(0, 1)
+    , xlab = "x axis", ylab = "y axis"
+    , main = paste("Plot", k))
+box("figure")
+}
+```
+
 ##mfg
 A numerical vector of the form c(i, j) where i and j indicate which figure in an array of figures is to be drawn next (if setting) or is being drawn (if enquiring). The array must already have been set by mfcol or mfrow.
 
 For compatibility with S, the form c(i, j, nr, nc) is also accepted, when nr and nc should be the current number of rows and number of columns. Mismatches will be ignored, with a warning.
 
+```{r}
+par(op)
+
+par(oma = c(0, 0, 3, 0))
+par(mfrow = c(3,2))
+plot_order <- c(1, 1, 3, 2, 1, 2, 3, 1, 2, 1, 2, 2)
+dim(plot_order) <- c(2, 6)
+for (k in 0:5) {
+set.seed(1023)
+# par(mfg = c(k %% 3, k %/% 3) + 1)
+par(mfg = plot_order[, k + 1])
+plot(
+    runif(10),
+    runif(10),
+    xlim = c(0, 1),
+    ylim = c(0, 1),
+    xlab = "x axis",
+    ylab = "y axis",
+    main = paste("Plot", k + 1)
+    )
+box("figure")
+}
+
+mtext(side = 3, line = 1, cex = 0.8, col = "blue",
+    "Default \"by row\" order in mfrow definition changed by mfg parameter", outer = TRUE)
+
+par(new = TRUE, mfrow = c(1,1))
+# clean plot area to start drawing
+par(mar = rep(0, 4), oma = c(0, 0, 2, 0))
+plot(1, 1
+    , type = 'n', axes = FALSE, ann = FALSE
+    , xaxs = 'i', yaxs = 'i'
+    , xlim = c(0,10), ylim = c(0,9)
+    , lab = c(3, 8, 7))
+#abline(v=c(2.5, 5, 7.5), h = 1.5+ 3 * (0:2), col = "red", lty = 2)
+#points(rep(c(2.5, 7.5), 3), rep(1.5+ 3 * (0:2), 2), pch = 19, col = "blue", lwd = 5)
+points_indicator <- data.frame( x = c(2.5, 7.5, 7.5, 2.5, 2.5, 7.5),
+    y = c(7.5, 1.5, 7.5, 1.5, 4.5, 4.5))
+points(points_indicator, pch = 19, col = "blue", lwd = 5)
+for (k in 1:5) {
+    arrows(
+        points_indicator$x[k],
+        points_indicator$y[k],
+        points_indicator$x[k + 1],
+        points_indicator$y[k + 1],
+        code = 2,
+        col = "blue",
+        lwd = 3,
+        length = 0.2,
+        angle = 15
+    )
+}
+```
+
+
 ##mgp
 The margin line (in mex units) for the axis title, axis labels and axis line. Note that mgp[1] affects title whereas mgp[2:3] affect axis. The default is c(3, 1, 0).
+
+```{r}
+
+# function to show lines in internal margins
+internal_margin <- function() {
+    for (k in 0:4) {
+        mtext(paste0("line ", k), line = k, at = 0.1, side = 1, cex = 0.7)
+    }
+    for (k in 0:3) {
+        mtext(paste0("line ", k), line = k, at = -0.4, side = 2, cex = 0.7)
+    }
+    for (k in 0:1) {
+        mtext(paste0("line ", k), line = k, at = 0.1, side = 3, cex = 0.7)
+    }
+    for (k in 0:1) {
+        mtext(paste0("line ", k), line = k, at = -0.4, side = 4, cex = 0.7)
+    }    
+}
+
+basic_plot <- function(){
+    plot_color = "black"
+    par(col.main = plot_color
+        , col.lab = plot_color
+        , col.sub = plot_color
+        , col.axis = plot_color
+        , fg = plot_color)
+    set.seed(1023)
+    plot(runif(10), runif(10)
+        , type = 'p', xlim = c(0, 1), ylim = c(0, 1),
+        xlab = "<--- x axis label", ylab = "<--- y axis label"
+        , main = "mgp par parameter"
+        , sub = "Plot Subtitle")
+    
+    par(new = TRUE)
+    plot(0.5, 0.5, type = 'n', axes = FALSE, xlim = c(0, 1), ylim = c(0, 1),
+        xlab = '', ylab = '')
+    text(0.2, 0.5, paste0("par(\"mgp\") = c(", paste(par("mgp"), collapse = ", "), ")"), adj = 0)
+    
+    box("plot", lty = "44")
+    box("figure", col = "red")
+    rect(0, 0, 1, 1, lty = 3, border = "blue")
+    
+    text(0.1, 0.9, "Area limited by xlim and ylim", col = "blue", cex = 0.8, adj = 0)    
+}
+
+# Different configurations for mpg
+par(op)
+par(mfrow = c(2,2))
+
+# plo1 1
+basic_plot()
+internal_margin()
+
+# plot 2
+par(mgp = c(3, 2, 1))
+basic_plot()
+internal_margin()
+
+# plot 3
+par(mgp = c(4, 1, 0), bty = 'n')
+basic_plot()
+internal_margin()
+
+# plot 4
+par(mgp = c(2.5, 1, 0.5), bty = 'n')
+basic_plot()
+internal_margin()
+grid()
+```
+
 
 ##mkh
 The height in inches of symbols to be drawn when the value of pch is an integer. Completely ignored in R.
@@ -838,10 +1073,86 @@ logical, defaulting to FALSE. If set to TRUE, the next high-level plotting comma
 
 ##oma
 A vector of the form c(bottom, left, top, right) giving the size of the outer margins in lines of text.
-Figure: oma.png
+
+```{r}
+outer_margin <- function() {
+    par(las = 0)
+    for(k in 0:1){
+        mtext(paste0("line ", k), line = k , side = 1, cex = 0.9, outer = TRUE)
+    }
+    for(k in 0:2){
+        mtext(paste0("line ", k), line = k, side = 2, cex = 0.9, outer = TRUE)
+    }
+    for(k in 0:2){
+        mtext(paste0("line ", k), line = k, at = 0, side = 3, cex = 0.9, outer = TRUE)
+    }
+    for(k in 0:0){
+        mtext(paste0("line ", k), line = k, side = 4, cex = 0.9, outer = TRUE)
+    }    
+}
+
+par(op)
+par(oma = c(2, 3, 3, 1))
+par(mfrow = c(2,2), mar = c(3, 3, 1, 1), mgp = c(3, 1, 0.2), bty = 'n', las = 1,
+    lab = c(4, 3, 7))
+for(k in 0:3){
+    set.seed(1023)
+    plot(runif(10), runif(10)
+        , xlim = c(0, 1), ylim = c(0, 1)
+        , xlab = "x axis", ylab = "y axis"
+        )
+    grid()
+    # box("figure")
+}
+mtext(text = "Example of Outer Margins defined ", line = 0, side = 3, outer = TRUE)
+par(mfrow = c(1, 1), new = TRUE)
+box("figure", col = "red")
+outer_margin()
+
+```
+
 
 ##omd
 A vector of the form c(x1, x2, y1, y2) giving the region inside outer margins in NDC (= normalized device coordinates), i.e., as a fraction (in [0, 1]) of the device region.
+
+
+```{r}
+outer_margin <- function() {
+    par(las = 0)
+    for(k in 0:2){
+        mtext(paste0("line ", k), line = k , side = 1, cex = 0.9, outer = TRUE)
+    }
+    for(k in 0:2){
+        mtext(paste0("line ", k), line = k, side = 2, cex = 0.9, outer = TRUE)
+    }
+    for(k in 0:2){
+        mtext(paste0("line ", k), line = k, at = 0, side = 3, cex = 0.9, outer = TRUE)
+    }
+    for(k in 0:2){
+        mtext(paste0("line ", k), line = k, side = 4, cex = 0.9, outer = TRUE)
+    }    
+}
+
+par(op)
+par(omd = c(0.1, 0.9, 0.15, 0.85))
+par(mfrow = c(2,2), mar = c(3, 3, 1, 1), mgp = c(3, 1, 0.2), bty = 'n', las = 1,
+    lab = c(4, 3, 7))
+for(k in 0:3){
+    set.seed(1023)
+    plot(runif(10), runif(10)
+        , xlim = c(0, 1), ylim = c(0, 1)
+        , xlab = "x axis", ylab = "y axis"
+        )
+    grid()
+    # box("figure")
+}
+mtext(text = "Example of Outer Margins defined with omd = c(0.1, 0.9, 0.15, 0.85) "
+    , line = 1, side = 3, font = 2, outer = TRUE)
+par(mfrow = c(1, 1), new = TRUE)
+box("figure", col = "red")
+outer_margin()
+
+```
 
 ##omi
 A vector of the form c(bottom, left, top, right) giving the size of the outer margins in inches.
@@ -854,19 +1165,274 @@ Either an integer specifying a symbol or a single character to be used as the de
 
 Some functions such as points accept a vector of values which are recycled.
 
+Plot design was copied from [Quick-R](http://www.statmethods.net/index.html)
+
+```{r}
+x <- (0:35) %/% 6
+y <- 5 - (0:35) %% 6
+par(pty = 's', mar = c(3, 4, 3, 4), lab = c(5, 6, 7))
+plot(x, y, typ = 'n', pch = 0:25,
+    axes = FALSE, 
+    xlab = NA, ylab = NA,
+    xlim = c(-0.3, 5.3), ylim = c(0, 5.3))
+abline( h = 0:5, v = 0:5, col = 'lightgray', lty = "22", lwd = 1)
+par(new = TRUE, col = 'darkgreen')
+
+# First 15 0:14
+index_symbol <- 1:21
+plot(x[index_symbol], y[index_symbol], typ = 'p',
+    pch = index_symbol - 1,
+    axes = FALSE, 
+    xlab = NA, ylab = NA, cex = 1.5,
+    main = "Plot symbols: pch =", cex.main = 0.8,
+    xlim = c(-0.3, 5.3), ylim = c(0, 5.3))
+text(x[index_symbol] - 0.3, y[index_symbol], index_symbol - 1,
+    adj = 1, col = 'black', cex = 0.7)
+# From 15 to 25
+index_symbol <- 22:26
+par(new = TRUE, col = 'darkgreen')
+plot(x[index_symbol], y[index_symbol], typ = 'p',
+    pch = index_symbol - 1,
+    axes = FALSE, 
+    xlab = NA, ylab = NA, cex = 1.5,
+    main = "Plot symbols: pch =", cex.main = 0.8,
+    xlim = c(-0.3, 5.3), ylim = c(0, 5.3), bg = "lightblue",
+    col = "red", lwd = 1.5)
+text(x[index_symbol] - 0.3, y[index_symbol], index_symbol - 1,
+    adj = 1, col = 'black', cex = 0.7)
+
+# From 26 to 35: symbols
+symbols <- c("*", ".", "o", "O", "0", "+", "-", "|", "%", "#")
+index_symbol <- 27:36
+par(new = TRUE, col = 'darkgreen')
+plot(x[index_symbol], y[index_symbol], typ = 'p',
+    pch = symbols,
+    axes = FALSE, 
+    xlab = NA, ylab = NA, cex = 1.5,
+    main = "Plot symbols: pch =", cex.main = 0.8,
+    xlim = c(-0.3, 5.3), ylim = c(0, 5.3), col = "blue")
+text(x[index_symbol] - 0.3, y[index_symbol], symbols,
+    adj = 1, col = 'black', cex = 0.7)
+mtext("Inspired by: http://www.statmethods.net/advgraphs/parameters.html"
+    , side = 1, line = 1, col = "black", adj = 0, at = 0, cex = 0.8)
+```
+
 ##pin
 The current plot dimensions, (width, height), in inches.
 
+
+```{r}
+par(op)
+par(pin = c(5, 2))
+set.seed(1023)
+plot(runif(10), runif(10)
+    , xlim = c(0, 1), ylim = c(0, 1)
+    , xlab = "x axis", ylab = "y axis"
+    )
+grid()
+box("inner", col = "green")
+box("plot", col = "blue")
+box("figure", col = "red")
+mtext(side = 3, line = 1, at = 0, adj = 0, paste0("par(\"pin\") = c(", paste(par("pin"), collapse = ", "), ")"))
+mtext(side = 3, line = 2, at = 0, adj = 0, paste0("par(\"plt\") = c(", 
+    paste(round(par("plt"), 2), collapse = ", "), ")"))
+mtext(side = 3, line = 0, at = 0, adj = 0, paste0("par(\"fig\") = c(", 
+    paste(round(par("fig"), 2), collapse = ", "), ")"))
+
+```
+
 ##plt
 A vector of the form c(x1, x2, y1, y2) giving the coordinates of the plot region as fractions of the current figure region.
+
+
+```{r}
+par(op)
+plot(0:1, 0:1, typ = 'n', axes = FALSE, xlab = "", ylab = "")
+mtext(paste0("bty = ", "'o'"), line = 0, side = 1, at=0.5, adj = 0)
+mtext(paste0("mar = c(", paste(op$mar, collapse = ", "), ")"), line = 1, side = 1, at=0.5, adj = 0)
+mtext(paste0("omi = c(", paste(op$omi, collapse = ", "), ")"), line = 2, side = 1, at=0.5, adj = 0)
+mtext(paste0("omr = c(", paste(op$omr, collapse = ", "), ")"), line = 3, side = 1, at=0.5, adj = 0)
+mtext(paste0("fig = c(", paste(op$fig, collapse = ", "), ")"), line = 4, side = 1, at=0.5, adj = 0)
+mtext(paste0("plt = c(", paste(round(op$plt, 2), collapse = ", "), ")"), line = 0, side = 3, at=0.5, adj = 0)
+mtext(paste0("pin = c(", paste(round(op$pin, 2), collapse = ", "), ")"), line = 1, side = 3, at=0.5, adj = 0)
+box(lty = '1111', col = 'blue' )
+# abline(v = c(seq(0, 1, 0.1)), h = c(seq(0, 1, 0.1)), lty = 2)
+
+par(plt = c(0.1, 0.3, 0.5, 0.8), new = TRUE)
+set.seed(1023)
+plot(runif(10), runif(10)
+    , xlim = c(0, 1), ylim = c(0, 1)
+    , xlab = "x axis", ylab = "y axis"
+    )
+set.seed(1023)
+par(plt = c(0.5, 0.7, 0.6, 0.8), new = TRUE)
+plot(runif(10), runif(10)
+    , xlim = c(0, 1), ylim = c(0, 1)
+    , xlab = "x axis", ylab = "y axis"
+    )
+set.seed(1023)
+par(plt = c(0.1, 0.3, 0.15, 0.3), new = TRUE)
+# box(lty = '1111', col = 'blue' )
+plot(runif(10), runif(10)
+    , xlim = c(0, 1), ylim = c(0, 1)
+    , las = 1, mgp = c(1.5, 0.5, 0), cex.lab = 0.8, cex.axis = 0.8
+    , lab = c(3, 3, 7)
+    , xlab = "x axis", ylab = "y axis"
+    )
+grid(col = "red")
+
+```
 
 ##ps
 integer; the point size of text (but not symbols). Unlike the pointsize argument of most devices, this does not change the relationship between mar and mai (nor oma and omi).
 
 What is meant by ‘point size’ is device-specific, but most devices mean a multiple of 1bp, that is 1/72 of an inch.
 
+
+```{r}
+text_info <- function(){
+    mtext(paste0("ps = ", "8, (default = 12)"), line = 0, side = 1, at=0.5, adj = 0)
+    mtext(paste0("mar = c(", paste(par("mar"), collapse = ", "), ")")
+        , line = 1, side = 1, at=0.5, adj = 0)
+    mtext(paste0("omi = c(", paste(par("omi"), collapse = ", "), ")")
+        , line = 2, side = 1, at=0.5, adj = 0)
+    mtext(paste0("mai = c(", paste(par("mai"), collapse = ", "), ")")
+        , line = 3, side = 1, at=0.5, adj = 0)
+    mtext(paste0("fig = c(", paste(par("fig"), collapse = ", "), ")")
+        , line = 4, side = 1, at=0.5, adj = 0)
+    mtext(paste0("plt = c(", paste(round(par("plt"), 2), collapse = ", "), ")")
+        , line = 0, side = 3, at=0.5, adj = 0)
+    mtext(paste0("pin = c(", paste(round(par("pin"), 2), collapse = ", "), ")")
+        , line = 1, side = 3, at=0.5, adj = 0)
+}
+par(op)
+oldpar <- par(mar = rep(0, 4))
+plot(1, 1
+    , type = 'n', axes = FALSE, ann = FALSE
+    , xaxs = 'i', yaxs = 'i'
+    , xlim = c(0,10), ylim = c(0,10)
+    , lab = c(10, 10, 7))
+grid(col = "red")
+rect(1.124572, 2.266667, 9.424000, 9.066666, col = "lightgray")
+rect(1, 5, 3, 8, col = "salmon")
+rect(5, 6, 7, 8, col = "salmon")
+rect(1, 1.5, 3, 3, col = "salmon")
+
+
+par(oldpar, new = TRUE)
+oldpar <- par(ps = 8)
+plot(0:1, 0:1, typ = 'n', axes = TRUE, xlab = "", ylab = "")
+text_info()
+# abline(v = c(seq(0, 1, 0.1)), h = c(seq(0, 1, 0.1)), lty = 2)
+
+par(plt = c(0.1, 0.3, 0.5, 0.8), new = TRUE)
+set.seed(1023)
+plot(runif(10), runif(10)
+    , xlim = c(0, 1), ylim = c(0, 1)
+    , xlab = "x axis", ylab = "y axis"
+    )
+mtext(side = 3, line = 0
+    , paste0("cxy = c(", paste(round(par("cxy"), 2), collapse = ", "), ")")
+    , cex = 0.8, col = "blue", adj = 0)
+mtext(side = 3, line = 1
+    , paste0("pin = c(", paste(round(par("pin"), 2), collapse = ", "), ")")
+    , cex = 0.8, col = "blue", adj = 0)
+mtext(side = 3, line = 2
+    , paste0("mar = c(", paste(round(par("mar"), 2), collapse = ", "), ")")
+    , cex = 0.8, col = "blue", adj = 0)
+
+
+set.seed(1023)
+par( mar = rep(0, 4), plt = c(0.5, 0.7, 0.6, 0.8), new = TRUE)
+plot(runif(10), runif(10)
+    , xlim = c(0, 1), ylim = c(0, 1)
+    , xlab = "x axis", ylab = "y axis"
+    )
+box("figure", lty = '1441', col = 'blue' )
+mtext(side = 2, line = 2
+    , paste0("pin = c(", paste(round(par("pin"), 2), collapse = ", "), ")")
+    , cex = 0.8, col = "blue", adj = 0)
+mtext(side = 3, line = 0
+    , paste0("cxy = c(", paste(round(par("cxy"), 2), collapse = ", "), ")")
+    , cex = 0.8, col = "blue", adj = 0)
+
+
+set.seed(1023)
+par(plt = c(0.1, 0.3, 0.15, 0.3), new = TRUE)
+# box(lty = '1111', col = 'blue' )
+plot(runif(10), runif(10)
+    , xlim = c(0, 1), ylim = c(0, 1)
+    # , las = 1, mgp = c(1.5, 0.5, 0), cex.lab = 0.8, cex.axis = 0.8
+    , lab = c(3, 3, 7)
+    , xlab = "x axis", ylab = "y axis"
+    )
+box("inner", lty = 1, col = 'blue' )
+box("figure", lty = 1, col = 'green' )
+box("plot", lty = 1, col = 'red' )
+box("outer", lty = 1, col = 'brown' )
+mtext(side = 1, line = 2
+    , paste0("plt = c(", paste(round(par("plt"), 2), collapse = ", "), ")")
+    , cex = 0.8, col = "blue", adj = 0)
+mtext(side = 2, line = 2
+    , paste0("cxy = c(", paste(round(par("cxy"), 2), collapse = ", "), ")")
+    , cex = 0.8, col = "blue", adj = 0)
+mtext(side = 2, line = 3
+    , paste0("pin = c(", paste(round(par("pin"), 2), collapse = ", "), ")")
+    , cex = 0.8, col = "blue", adj = 0)
+mtext(side = 4, line = 0
+    , paste0("mar = c(", paste(round(par("mar"), 2), collapse = ", "), ")")
+    , cex = 0.8, col = "blue", adj = 0)
+```
+
 ##pty
 A character specifying the type of plot region to be used; "s" generates a square plotting region and "m" generates the maximal plotting region.
+
+
+```{r}
+outer_margin <- function() {
+    par(las = 0)
+    for(k in 0:1){
+        mtext(paste0("line ", k), line = k , side = 1, cex = 0.9, outer = TRUE)
+    }
+    for(k in 0:2){
+        mtext(paste0("line ", k), line = k, side = 2, cex = 0.9, outer = TRUE)
+    }
+    for(k in 0:2){
+        mtext(paste0("line ", k), line = k, at = 0, side = 3, cex = 0.9, outer = TRUE)
+    }
+    for(k in 0:0){
+        mtext(paste0("line ", k), line = k, side = 4, cex = 0.9, outer = TRUE)
+    }    
+}
+
+par(op)
+par(oma = c(2, 3, 3, 1))
+par(mfrow = c(2,2), mar = c(3, 3, 1, 1), mgp = c(3, 1, 0.2)
+    , bty = 'o'
+    , las = 1
+    , lab = c(4, 3, 7))
+pty_values <- c("s", "m", "s", "m")
+for(k in 0:3){
+    set.seed(1023)
+    par(pty = pty_values[k + 1])
+    plot(runif(10), runif(10)
+        , xlim = c(0, 1), ylim = c(0, 1)
+        , xlab = "x axis", ylab = "y axis"
+        )
+    grid()
+    box("plot", col = "red", lty = "14")
+    box("figure", col = "blue", lty = "14")
+    text(0, 0.5, paste("pty =", par("pty")), adj = 0, col = "blue", cex = 0.8)
+    text(0, 0.4, 
+        paste0("plt = c(", paste(round(par("plt"), 2), collapse = ", "), ")"), cex = 0.8, col = "blue", adj = 0)
+    
+    
+}
+mtext(text = "Example of Outer Margins defined ", line = 0, side = 3, outer = TRUE)
+par(mfrow = c(1, 1), new = TRUE)
+box("figure", col = "red")
+outer_margin()
+```
 
 ##smo
 (Unimplemented) a value which indicates how smooth circles and circular arcs should be.
@@ -874,14 +1440,260 @@ A character specifying the type of plot region to be used; "s" generates a squar
 ##srt
 The string rotation in degrees. See the comment about crt. Only supported by text.
 
+```{r}
+old_par <- par(pty = 's', mai = rep(0, 4))
+
+
+#  star 1
+col_text <- "black"
+x <- 5; y <- 5
+plot(0 + x, 0 + y
+    , xlim = c(-10, 10), ylim = c(-10, 10)
+    , axes = FALSE
+    , xlab = "", ylab = ""
+    , pch = 21, col = "red", bg = "yellow", cex = 5)
+grid()
+points(c(0, 0, 2, -2, 1, -1, -1, 1) + x, c(2, -2, 0, 0, 1, 1, -1, -1) + y
+    , pch = ".", col = "red", cex = 3)
+text(2 + x, 0 + y, paste("srt", "=0"), srt = 0, adj = c(0, 0.3), col = col_text[1])
+text(1 + x, 1 + y, paste("srt", "=45"), srt = 45, adj = c(0, 0.3), col = col_text[2])
+text(0 + x, 2 + y, paste("srt", "=90"), srt = 90, adj = c(0, 0.3), col = col_text[3])
+text(-1 + x, 1 + y, paste("srt", "=135"), srt = 135, adj = c(0, 0.3), col = col_text[4])
+text(-2 + x, 0 + y, paste("srt", "=180"), srt = 180, adj = c(0, 0.3), col = col_text[5])
+text(-1 + x, -1 + y, paste("srt", "=225"), srt = 225, adj = c(0, 0.3), col = col_text[6])
+text(0 + x, -2 + y, paste("srt", "=270"), srt = 270, adj = c(0, 0.3), col = col_text[7])
+text(1 + x, -1 + y, paste("srt", "=315"), srt = 315, adj = c(0, 0.3), col = col_text[8])
+
+# star 2
+par(new = TRUE)
+col_text <- rep("red", 8)
+x <- -5; y <- -5
+plot(0 + x, 0 + y
+    , xlim = c(-10, 10), ylim = c(-10, 10)
+    , axes = FALSE
+    , xlab = "", ylab = ""
+    , pch = 21, col = "red", bg = "yellow", cex = 5)
+
+points(c(0, 0, 2, -2, 1, -1, -1, 1) + x, c(2, -2, 0, 0, 1, 1, -1, -1) + y
+    , pch = ".", col = "red", cex = 3)
+text(2 + x, 0 + y, paste("srt", "=0"), srt = 0, adj = c(0, 0.3), col = col_text[1])
+text(1 + x, 1 + y, paste("srt", "=45"), srt = 45, adj = c(0, 0.3), col = col_text[2])
+text(0 + x, 2 + y, paste("srt", "=90"), srt = 90, adj = c(0, 0.3), col = col_text[3])
+text(-1 + x, 1 + y, paste("srt", "=135"), srt = 135, adj = c(0, 0.3), col = col_text[4])
+text(-2 + x, 0 + y, paste("srt", "=180"), srt = 180, adj = c(0, 0.3), col = col_text[5])
+text(-1 + x, -1 + y, paste("srt", "=225"), srt = 225, adj = c(0, 0.3), col = col_text[6])
+text(0 + x, -2 + y, paste("srt", "=270"), srt = 270, adj = c(0, 0.3), col = col_text[7])
+text(1 + x, -1 + y, paste("srt", "=315"), srt = 315, adj = c(0, 0.3), col = col_text[8])
+
+# star 3
+par(new = TRUE)
+col_text <- rep("blue", 8)
+x <- -5; y <- 5
+plot(0 + x, 0 + y
+    , xlim = c(-10, 10), ylim = c(-10, 10)
+    , axes = FALSE
+    , xlab = "", ylab = ""
+    , pch = 21, col = "red", bg = "yellow", cex = 5)
+
+points(c(0, 0, 2, -2, 1, -1, -1, 1) + x, c(2, -2, 0, 0, 1, 1, -1, -1) + y
+    , pch = ".", col = "red", cex = 3)
+text(2 + x, 0 + y, paste("srt", "=0"), srt = 0, adj = c(0, 0.3), col = col_text[1])
+text(1 + x, 1 + y, paste("srt", "=45"), srt = 45, adj = c(0, 0.3), col = col_text[2])
+text(0 + x, 2 + y, paste("srt", "=90"), srt = 90, adj = c(0, 0.3), col = col_text[3])
+text(-1 + x, 1 + y, paste("srt", "=315"), srt = 315, adj = c(1, 0.3), col = col_text[4])
+text(-2 + x, 0 + y, paste("srt", "=0"), srt = 0, adj = c(1, 0.3), col = col_text[5])
+text(-1 + x, -1 + y, paste("srt", "=45"), srt = 45, adj = c(1, 0.3), col = col_text[6])
+text(0 + x, -2 + y, paste("srt", "=270"), srt = 270, adj = c(0, 0.3), col = col_text[7])
+text(1 + x, -1 + y, paste("srt", "=315"), srt = 315, adj = c(0, 0.3), col = col_text[8])
+
+# star 4
+par(new = TRUE)
+col_text <- rep("orange", 8)
+x <- 5; y <- -5
+plot(0 + x, 0 + y
+    , xlim = c(-10, 10), ylim = c(-10, 10)
+    , axes = FALSE
+    , xlab = "", ylab = ""
+    , pch = 21, col = "red", bg = "yellow", cex = 5)
+
+points(c(0, 0, 2, -2, 1, -1, -1, 1) + x, c(2, -2, 0, 0, 1, 1, -1, -1) + y
+    , pch = ".", col = "red", cex = 3)
+text(2 + x, 0 + y, paste("srt", "=0"), srt = 0, adj = c(0, 0.3), col = col_text[1])
+text(1 + x, 1 + y, paste("srt", "=45"), srt = 45, adj = c(0, 0.3), col = col_text[2])
+text(0 + x, 2 + y, paste("srt", "=90"), srt = 90, adj = c(0, 0.3), col = col_text[3])
+text(-1 + x, 1 + y, paste("srt", "=315"), srt = 315, adj = c(1, 0.3), col = col_text[4])
+text(-2 + x, 0 + y, paste("srt", "=0"), srt = 0, adj = c(1, 0.3), col = col_text[5])
+text(-1 + x, -1 + y, paste("srt", "=45"), srt = 45, adj = c(1, 0.3), col = col_text[6])
+text(0 + x, -2 + y, paste("srt", "=90"), srt = 90, adj = c(1, 0.3), col = col_text[7])
+text(1 + x, -1 + y, paste("srt", "=315"), srt = 315, adj = c(0, 0.3), col = col_text[8])
+par(old_par)
+```
+
+
 ##tck
 The length of tick marks as a fraction of the smaller of the width or height of the plotting region. If tck >= 0.5 it is interpreted as a fraction of the relevant side, so if tck = 1 grid lines are drawn. The default setting (tck = NA) is to use tcl = -0.5.
+
+```{r}
+opnew <- par(mfrow = c(2,2), tck = NA)
+set.seed(1023)
+plot(runif(10), runif(10)
+    ,xlim = c(0, 1), ylim = c(0, 1) 
+    ,xlab = "", ylab = ""
+    ,main = "tck = NA (default)")
+mtext(side = 1, line = 2, at = 0
+    , paste0("tck = ", round(par("tck"), 2))
+    , cex = 0.8, col = "blue", adj = 0)
+mtext(side = 1, line = 2, at = 0.5
+    , paste0("tcl = ", round(par("tcl"), 2))
+    , cex = 0.8, col = "blue", adj = 0)
+
+par(tck = 1)
+set.seed(1023)
+plot(runif(10), runif(10)    
+    ,xlim = c(0, 1), ylim = c(0, 1) 
+    ,xlab = "", ylab = ""
+    ,main = "tck = 1")
+mtext(side = 1, line = 2, at = 0
+    , paste0("tck = ", round(par("tck"), 2))
+    , cex = 0.8, col = "blue", adj = 0)
+mtext(side = 1, line = 2, at = 0.5
+    , paste0("tcl = ", round(par("tcl"), 2))
+    , cex = 0.8, col = "blue", adj = 0)
+
+par(tck = -0.08)
+set.seed(1023)
+plot(runif(10), runif(10)    
+    ,xlim = c(0, 1), ylim = c(0, 1) 
+    ,xlab = "", ylab = ""
+    ,main = "tck = -0.08")
+mtext(side = 1, line = 2, at = 0
+    , paste0("tck = ", round(par("tck"), 2))
+    , cex = 0.8, col = "blue", adj = 0)
+mtext(side = 1, line = 2, at = 0.5
+    , paste0("tcl = ", round(par("tcl"), 2))
+    , cex = 0.8, col = "blue", adj = 0)
+
+par(tck = 0.02)
+set.seed(1023)
+plot(runif(10), runif(10)    
+    ,xlim = c(0, 1), ylim = c(0, 1) 
+    ,xlab = "", ylab = ""
+    ,main = "tck = 0.02")
+mtext(side = 1, line = 2, at = 0
+    , paste0("tck = ", round(par("tck"), 2))
+    , cex = 0.8, col = "blue", adj = 0)
+mtext(side = 1, line = 2, at = 0.5
+    , paste0("tcl = ", round(par("tcl"), 2))
+    , cex = 0.8, col = "blue", adj = 0)
+
+par(opnew)
+```
+
 
 ##tcl
 The length of tick marks as a fraction of the height of a line of text. The default value is -0.5; setting tcl = NA sets tck = -0.01 which is S' default.
 
+```{r}
+opnew <- par(mfrow = c(2,2), tcl = -0.5)
+set.seed(1023)
+plot(runif(10), runif(10)
+    ,xlim = c(0, 1), ylim = c(0, 1) 
+    ,xlab = "", ylab = ""
+    ,main = "tcl = -0.5 (default)")
+mtext(side = 1, line = 2, at = 0
+    , paste0("tck = ", round(par("tck"), 2))
+    , cex = 0.8, col = "blue", adj = 0)
+mtext(side = 1, line = 2, at = 0.5
+    , paste0("tcl = ", round(par("tcl"), 2))
+    , cex = 0.8, col = "blue", adj = 0)
+
+par(tcl = NA)
+set.seed(1023)
+plot(runif(10), runif(10)    
+    ,xlim = c(0, 1), ylim = c(0, 1) 
+    ,xlab = "", ylab = ""
+    ,main = "tcl = NA, eq to tck = -0.01 (S default)")
+mtext(side = 1, line = 2, at = 0
+    , paste0("tck = ", round(par("tck"), 2))
+    , cex = 0.8, col = "blue", adj = 0)
+mtext(side = 1, line = 2, at = 0.5
+    , paste0("tcl = ", round(par("tcl"), 2))
+    , cex = 0.8, col = "blue", adj = 0)
+
+par(tcl = -0.2)
+set.seed(1023)
+plot(runif(10), runif(10)    
+    ,xlim = c(0, 1), ylim = c(0, 1) 
+    ,xlab = "", ylab = ""
+    ,main = "tcl = -0.2")
+mtext(side = 1, line = 2, at = 0
+    , paste0("tck = ", round(par("tck"), 2))
+    , cex = 0.8, col = "blue", adj = 0)
+mtext(side = 1, line = 2, at = 0.5
+    , paste0("tcl = ", round(par("tcl"), 2))
+    , cex = 0.8, col = "blue", adj = 0)
+
+par(tcl = 0.3)
+set.seed(1023)
+plot(runif(10), runif(10)    
+    ,xlim = c(0, 1), ylim = c(0, 1) 
+    ,xlab = "", ylab = ""
+    ,main = "tcl = 0.3")
+mtext(side = 1, line = 2, at = 0
+    , paste0("tck = ", round(par("tck"), 2))
+    , cex = 0.8, col = "blue", adj = 0)
+mtext(side = 1, line = 2, at = 0.5
+    , paste0("tcl = ", round(par("tcl"), 2))
+    , cex = 0.8, col = "blue", adj = 0)
+
+par(opnew)
+```
+
+
+
 ##usr
 A vector of the form c(x1, x2, y1, y2) giving the extremes of the user coordinates of the plotting region. When a logarithmic scale is in use (i.e., par("xlog") is true, see below), then the x-limits will be 10 ^ par("usr")[1:2]. Similarly for the y-axis.
+
+```{r}
+opnew <- par(mfrow = c(2,2), tcl = -0.2, mgp = c(3, 0.5, 0))
+set.seed(1023)
+plot(runif(10), runif(10)
+    , xlim = c(0, 1), ylim = c(0, 1)
+    , xlab = "", ylab = ""
+    , main = "xlim = c(0, 1); ylim = c(0, 1)")
+mtext(side = 1, line = 2
+    , paste0("usr = c(", paste(round(par("usr"), 2), collapse = ", "), ")")
+    , cex = 0.8, col = "blue", adj = 0)
+
+set.seed(1023)
+plot(runif(10), runif(10)    
+    , xlim = c(-1, 1), ylim = c(-1, 1)
+    , xlab = "", ylab = ""
+    , main = "xlim = c(-1, 1); ylim = c(-1, 1)")
+mtext(side = 1, line = 2
+    , paste0("usr = c(", paste(round(par("usr"), 2), collapse = ", "), ")")
+    , cex = 0.8, col = "blue", adj = 0)
+
+set.seed(1023)
+plot(runif(10), runif(10)    
+    , xlim = c(-10, 10), ylim = c(-10, 10)
+    , xlab = "", ylab = ""
+    , main = "xlim = c(-10, 10); ylim = c(-10, 10)")
+mtext(side = 1, line = 2
+    , paste0("usr = c(", paste(round(par("usr"), 2), collapse = ", "), ")")
+    , cex = 0.8, col = "blue", adj = 0)
+
+set.seed(1023)
+plot(runif(10), runif(10)    
+    , xlim = c(-5, 5), ylim = c(-2, 2)
+    , xlab = "", ylab = ""
+    , main = "xlim = c(-5, 5); ylim = c(-2, 2)")
+mtext(side = 1, line = 2
+    , paste0("usr = c(", paste(round(par("usr"), 2), collapse = ", "), ")")
+    , cex = 0.8, col = "blue", adj = 0)
+
+par(opnew)
+```
 
 ##xaxp
 A vector of the form c(x1, x2, n) giving the coordinates of the extreme tick marks and the number of intervals between tick-marks when par("xlog") is false. Otherwise, when log coordinates are active, the three values have a different meaning: For a small range, n is negative, and the ticks are as in the linear case, otherwise, n is in 1:3, specifying a case number, and x1 and x2 are the lowest and highest power of 10 inside the user coordinates, 10 ^ par("usr")[1:2]. (The "usr" coordinates are log10-transformed here!)
@@ -901,6 +1713,60 @@ This parameter is reset when a user coordinate system is set up, for example by 
 
 It is only relevant to default numeric axis systems, and not for example to dates.
 
+```{r}
+opnew <- par(mfrow = c(2,2), tcl = -0.2, mgp = c(3, 0.5, 0))
+set.seed(1023)
+plot(runif(10), runif(10)
+    ,xlim = c(0, 1), ylim = c(0, 1)
+    ,xlab = "", ylab = ""
+    ,main = "Using parameter xaxp"
+    ,las = 2)
+mtext(side = 1, line = 2
+    , paste0("xaxp = c(", paste(round(par("xaxp"), 2), collapse = ", "), ")")
+    , cex = 0.8, col = "blue", adj = 0)
+mtext(side = 1, line = 3
+    , paste0("yaxp = c(", paste(round(par("yaxp"), 2), collapse = ", "), ")")
+    , cex = 0.8, col = "blue", adj = 0)
+
+set.seed(1023)
+par(xaxp = c(0, 1, 2))
+plot(runif(10), runif(10)
+    ,xlim = c(0, 1), ylim = c(0, 1)
+    ,xlab = "", ylab = ""
+    ,main = "Using parameter xaxp"
+    ,las = 2
+    ,yaxp = c(0, 1, 10)
+    )
+mtext(side = 1, line = 2
+    , paste0("xaxp = c(", paste(round(par("xaxp"), 2), collapse = ", "), ")")
+    , cex = 0.8, col = "blue", adj = 0)
+mtext(side = 1, line = 3
+    , paste0("yaxp = c(", paste(round(par("yaxp"), 2), collapse = ", "), ")")
+    , cex = 0.8, col = "blue", adj = 0)
+
+set.seed(1023)
+plot(runif(10), runif(10)
+    ,xlim = c(0, 1), ylim = c(0, 1)
+    ,xlab = "", ylab = ""
+    ,main = "Using parameter xaxp")
+mtext(side = 1, line = 2
+    , paste0("xaxp = c(", paste(round(par("xaxp"), 2), collapse = ", "), ")")
+    , cex = 0.8, col = "blue", adj = 0)
+
+
+set.seed(1023)
+plot(runif(10), runif(10)
+    ,xlim = c(0, 1), ylim = c(0, 1)
+    ,xlab = "", ylab = ""
+    ,main = "Using parameter xaxp")
+mtext(side = 1, line = 2
+    , paste0("xaxp = c(", paste(round(par("xaxp"), 2), collapse = ", "), ")")
+    , cex = 0.8, col = "blue", adj = 0)
+
+par(opnew)
+```
+
+
 ##xaxs
 The style of axis interval calculation to be used for the x-axis. Possible values are "r", "i", "e", "s", "d". The styles are generally controlled by the range of data or xlim, if given.
 Style "r" (regular) first extends the data range by 4 percent at each end and then finds an axis with pretty labels that fits within the extended range.
@@ -910,8 +1776,62 @@ Style "e" (extended) is like style "s", except that it is also ensures that ther
 Style "d" (direct) specifies that the current axis should be used on subsequent plots.
 (Only "r" and "i" styles have been implemented in R.)
 
+
+```{r}
+par(mfrow = c(1, 2))
+
+# Create a subwindow
+# 1. plot area available when internal margins are 0
+# par(mai = c(0, 0, 0, 0))
+
+set.seed(1023)
+plot(runif(10), runif(10), type = 'n', xlab = "X", ylab = "Y",
+    xlim = c(0, 1), ylim = c(0, 1), las = 1)
+rect(0,0,1,1, col = "salmon")
+points(runif(10), runif(10))
+title(main = "xaxs = 'r' & yaxs = 'r' (default)")
+
+abline(h = c(0, 1), v = c(0, 1), lty = 2)
+text(0.05, 0.15, "Note that the plot area has the extensions \nbeyond xlim=c(0,1) and ylim=c(0,1);\n white area, 4%", adj = 0, cex = 0.7)
+box("figure", col = "green")
+
+# 2. Parameter to delete extra space
+par(xaxs = 'i', yaxs = 'i')
+
+set.seed(1023)
+plot(runif(10), runif(10), type = 'n', 
+    xlab = 'X', ylab = 'Y', xlim = c(0, 1), ylim = c(0, 1), las = 1)
+rect(0,0,1,1, col = "salmon")
+points(runif(10), runif(10))
+title(main = "xaxs = 'i' & yaxs = 'i'")
+
+text(0.05, 0.15, "par(xaxs = 'i', yaxs = 'i') eliminates\nthe white area", adj = 0, cex = 0.7)
+box("figure", col = "green")
+```
+
 ##xaxt
+
 A character which specifies the x axis type. Specifying "n" suppresses plotting of the axis. The standard value is "s": for compatibility with S values "l" and "t" are accepted but are equivalent to "s": any value other than "n" implies plotting.
+
+```{r}
+par(mfrow = c(1, 2))
+
+set.seed(1023)
+plot(runif(10), runif(10), type = 'n', xlab = "X", ylab = "Y",
+    xaxt = 's', xlim = c(0, 1), ylim = c(0, 1), las = 1)
+
+points(runif(10), runif(10))
+title(main = "xaxt = 's' (default)")
+box("figure", col = "green")
+
+
+set.seed(1023)
+plot(runif(10), runif(10), type = 'n', 
+    xaxt = 'n', xlab = 'X', ylab = 'Y', xlim = c(0, 1), ylim = c(0, 1), las = 1)
+points(runif(10), runif(10))
+title(main = "xaxt = 'n'")
+box("figure", col = "green")
+```
 
 ##xlog
 A logical value (see log in plot.default). If TRUE, a logarithmic scale is in use (e.g., after plot(*, log = "x")). For a new device, it defaults to FALSE, i.e., linear scale.
@@ -970,41 +1890,43 @@ abline(v = c(seq(0, 1, 0.1)), h = c(seq(0, 1, 0.1)), lty = 2)
 
 
 ```{r}
-
+par(op)
 plot(0:1, 0:1, axes = FALSE, bty = 'o', xlab = "", ylab = "")
 mtext(paste0("bty = ", "'o'"), line = 0, side = 1)
 mtext(paste0("mar = c(", paste(op$mar, collapse = ", "), ")"), line = 1, side = 1)
 mtext(paste0("omi = c(", paste(op$omi, collapse = ", "), ")"), line = 2, side = 1)
-mtext(paste0("omr = c(", paste(op$omr, collapse = ", "), ")"), line = 3, side = 1)
+mtext(paste0("plt = c(", paste(round(op$plt, 2), collapse = ", "), ")"), line = 3, side = 1)
 mtext(paste0("fig = c(", paste(op$fig, collapse = ", "), ")"), line = 4, side = 1)
 mtext(paste0("plt = c(", paste(round(op$plt, 2), collapse = ", "), ")"), line = 0, side = 2)
 mtext(paste0("pin = c(", paste(round(op$pin, 2), collapse = ", "), ")"), line = 1, side = 2)
 
 abline(v = c(seq(0, 1, 0.1)), h = c(seq(0, 1, 0.1)), lty = 2)
 
-par(plt = c(0.1, 0.3, 0.5, 0.8))
+par(plt = c(0.5, 0.8, 0.5, 0.8))
 box(lty = '1111', col = 'blue' )
 abline(v = c(seq(0, 1, 0.1)), h = c(seq(0, 1, 0.1)), lty = 1, col = "green")
+par(new = TRUE)
+plot(runif(10), runif(10), xlim = c(0, 1), ylim = c(0, 1))
 ```
 
 ```{r}
 # clean plot area to start drawing
-par(mar = rep(0, 4))
+opnew <- par(mar = rep(0, 4))
 plot(1, 1
     , type = 'n', axes = FALSE, ann = FALSE
     , xaxs = 'i', yaxs = 'i'
     , xlim = c(0,10), ylim = c(0,10)
     , lab = c(10, 10, 7))
 grid()
-par(op)
+par(opnew)
 ```
 
 ```{r}
 par(op)
 
 # start by plotting a normal plot with standard parameter but in light colors
-plot_color = "lightgray"
-par( col.main= plot_color
+plot_color <- "lightgray"
+par( col.main = plot_color
     , col.lab = plot_color
     , col.sub = plot_color
     , col.axis = plot_color
@@ -1016,5 +1938,239 @@ plot(runif(10), runif(10)
     , main = "Plot Title"
     , sub = "Plot Subtitle")
 
+par(op)
+```
 
+
+```{r}
+text_info <- function(){
+    mtext(paste0("ps = ", "8, (default = 12)"), line = 0, side = 1, at = 0.5, adj = 0)
+    mtext(paste0("mar = c(", paste(par("mar"), collapse = ", "), ")")
+        , line = 1, side = 1, at = 0.5, adj = 0)
+    mtext(paste0("cxy = c(", paste(par("cxy"), collapse = ", "), ")")
+        , line = 2, side = 1, at = 0.5, adj = 0)
+    mtext(paste0("mai = c(", paste(par("mai"), collapse = ", "), ")")
+        , line = 3, side = 1, at = 0.5, adj = 0)
+    mtext(paste0("fig = c(", paste(par("fig"), collapse = ", "), ")")
+        , line = 4, side = 1, at = 0.5, adj = 0)
+    mtext(paste0("plt = c(", paste(round(par("plt"), 2), collapse = ", "), ")")
+        , line = 0, side = 3, at = 0.5, adj = 0)
+    mtext(paste0("pin = c(", paste(round(par("pin"), 2), collapse = ", "), ")")
+        , line = 1, side = 3, at = 0.5, adj = 0)
+}
+par(mar = rep(0, 4))
+plot(1, 1
+    , type = 'n', axes = FALSE, ann = FALSE
+    , xaxs = 'i', yaxs = 'i'
+    , xlim = c(0,10), ylim = c(0,10)
+    , lab = c(10, 10, 7))
+grid(col = "red")
+
+par(mar = op$mar, ps = 8, new = TRUE)
+set.seed(1023)
+plot(runif(10), runif(10)
+    , xlim = c(0, 1), ylim = c(0, 1)
+    , xlab = "x axis", ylab = "y axis"
+    )
+text_info()
+
+```
+
+
+
+```{r}
+text_info <- function(x){
+    text(x, 0.9, paste0("ps = ", "8, (default = 12)"), adj = 0)
+    text(x, 0.8, paste0("mar = c(", paste(par("mar"), collapse = ", "), ")"), adj = 0)
+    text(x, 0.7, paste0("mai = c(", paste(par("mai"), collapse = ", "), ")"), adj = 0)
+    text(x, 0.6, paste0("fig = c(", paste(round(par("fig"), 2), collapse = ", "), ")")
+        , adj = 0, font = 2, col = "blue")
+    text(x, 0.5, paste0("fin = c(", paste(round(par("fin"), 2), collapse = ", "), ")")
+        , adj = 0)
+    text(x, 0.4, paste0("plt = c(", paste(round(par("plt"), 2), collapse = ", "), ")")
+        , adj = 0)
+    text(x, 0.3, paste0("pin = c(", paste(round(par("pin"), 2), collapse = ", "), ")")
+        , adj = 0)
+    text(x, 0.2, paste0("cin = c(", paste(round(par("cin"), 2), collapse = ", "), ")")
+        , adj = 0)
+    text(x, 0.1, paste0("cxy = c(", paste(round(par("cxy"), 2), collapse = ", "), ")")
+        , adj = 0)
+}
+par(op)
+
+oldpar <- par(mar = rep(0, 4))
+plot(1, 1
+    , type = 'n', axes = FALSE, ann = FALSE
+    , xaxs = 'i', yaxs = 'i'
+    , xlim = c(0,10), ylim = c(0,10)
+    , lab = c(10, 10, 7))
+grid(col = "red")
+rect(1.124572, 2.266667, 9.424000, 9.066666, col = "lightgray")
+rect(1.5, 1, 5.5, 8, col = "salmon")
+par(oldpar)
+
+oldpar_2 <- par(ps = 8, new = TRUE)
+plot(0:1, 0:1, typ = 'n', axes = TRUE, xlab = "", ylab = "")
+text_info(0.6)
+par(oldpar_2)
+
+oldpar_3 <- par(fig = c(0.15, 0.55, 0.1, 0.8), ps = 8, new = TRUE)
+set.seed(1023)
+plot(runif(10), runif(10), type = 'n'
+    , xlim = c(0, 1), ylim = c(0, 1)
+    , xlab = "x axis", ylab = "y axis")
+text_info(0)
+par(oldpar_3)
+```
+
+```{r}
+#oldpar_3 <- par(fig = c(0.1, 0.9, 0.1, 0.9), ps = 8)
+oldpar_3 <- par(fin = c(3, 2), ps = 8)
+set.seed(1023)
+plot(runif(10), runif(10)
+    , xlim = c(0, 1), ylim = c(0, 1)
+    , xlab = "x axis", ylab = "y axis"
+    )
+mtext(side = 3, line = 0
+    , paste0("cxy = c(", paste(round(par("cxy"), 2), collapse = ", "), ")")
+    , cex = 0.8, col = "blue", adj = 0)
+mtext(side = 3, line = 1
+    , paste0("pin = c(", paste(round(par("pin"), 2), collapse = ", "), ")")
+    , cex = 0.8, col = "blue", adj = 0)
+mtext(side = 3, line = 2
+    , paste0("mar = c(", paste(round(par("mar"), 2), collapse = ", "), ")")
+    , cex = 0.8, col = "blue", adj = 0)
+par(oldpar_3)
+```
+
+
+```{r}
+par(op)
+
+# Create a subwindow
+# 1. plot area available when internal margins are 0
+
+oldpar <- par(mai = c(0, 0, 0, 0), xaxs = 'i', yaxs = 'i')
+plot.new()
+
+# set the fig margins
+abline(h = c(0.5, 0.8), v = c(0.5, 0.8), lty = 4)
+box("figure", lty = 1, col = "red")
+
+# color margins
+prop <- oldpar$mai/rep(rev(par("fin")), 2)
+rect(0,0,1,prop[1], col = "salmon1", border = NA)
+rect(0,0,prop[2], 1, col = "salmon1", border = NA)
+rect(0,1 - prop[3],1, 1, col = "salmon1", border = NA)
+rect(1 - prop[4], 0 , 1, 1, col = "salmon1", border = NA)
+par(oldpar)
+
+# show plot area
+box("plot", lty = 1, lwd = 3, col = "green")
+
+# plot a plot
+set.seed(1023)
+par(new = TRUE)
+plot(runif(10), runif(10), typ = 'n', 
+    xlab = 'X', ylab = 'Y', xlim = c(0, 1), ylim = c(0, 1))
+
+# Concrete area to plot
+rect(0,0,1,1, col = "green")
+
+set.seed(1023)
+points(runif(10), runif(10), pch = 20)
+box("figure", lty = 1, col = "red")
+
+
+# 2. Parameter to delete extra space
+
+newfig <- c(0.5, 0.8, 0.5, 0.8)
+newscale <- c(newfig[2] - newfig[1], newfig[4] - newfig[3])
+par(fig = newfig, new = TRUE)
+oldpar <- par(mai = par("mai") * rep(rev(newscale), 2))
+rect(0, 0, 1, 1, col = "magenta")
+set.seed(1023)
+par(new = TRUE)
+plot(runif(10), runif(10), xlim = c(0, 1), ylim = c(0, 1), axes = FALSE)
+box("plot", lty = 1, col = "red")
+box("figure", lty = 4, col = "blue")
+```
+
+
+
+```{r}
+par(mfrow = c(2, 2))
+
+# Create a subwindow
+# 1. plot area available when internal margins are 0
+par(mai = c(0, 0, 0, 0))
+
+set.seed(1023)
+plot(runif(10), runif(10), type = 'n', 
+    yaxt = 'n', xaxt = 'n', xlab = '', ylab = '', xlim = c(0, 1), ylim = c(0, 1))
+rect(0,0,1,1, col = "salmon")
+points(runif(10), runif(10))
+
+abline(h = c(0, 1), v = c(0, 1), lty = 2)
+text(0.05, 0.15, "Note that the plot area has the extensions \nbeyond x=c(0,1) and y=c(0,1); white area, 4%", adj = 0)
+box("plot", lty = "11")
+
+# 2. Parameter to delete extra space
+par(xaxs = 'i', yaxs = 'i')
+
+set.seed(1023)
+plot(runif(10), runif(10), type = 'n', 
+    yaxt = 'n', xaxt = 'n', xlab = '', ylab = '', xlim = c(0, 1), ylim = c(0, 1))
+rect(0,0,1,1, col = "salmon")
+points(runif(10), runif(10))
+
+abline(h = c(0, 1), v = c(0, 1), lty = 2)
+text(0.05, 0.15, "par(xaxs = 'i', yaxs = 'i') eliminates the white area", adj = 0)
+box("plot", lty = "11")
+
+# 3. We create a subplot in an area
+
+plot.new()
+box("plot", lty = "11")
+abline(h = c(0.5, 0.8), v = c(0.5, 0.8), lty = 4)
+text(0.05, 0.3, 
+    "When mfrow is used,
+fig parameters refers to the complete screen
+and they have to be rescaled to the particular subscreen", adj = 0)
+
+
+par(fig = c(0.25, 0.4, 0.25, 0.4), new = TRUE)
+set.seed(1023)
+plot(runif(10), runif(10), xlim = c(0, 1), ylim = c(0, 1), axes = FALSE)
+box("plot", lty = "11", col = "red")
+
+# 4. rescale mai parameter to fully plot the complete plot in the subregion
+par(fig = c(0.5, 1, 0, 0.5), xaxs = op$xaxs, yaxs = op$xaxs, new = TRUE)
+# 0.83 is the factor to rescale margin as the figure area is split in 4 figures
+par(mai = 0.83 * op$mai)
+set.seed(1023)
+plot(runif(10), runif(10), xlim = c(0, 1), ylim = c(0, 1))
+box("figure", lty = 1, col = "red")
+```
+
+### Plot signature
+
+
+```{r}
+outer_margin <- function(left_note = "", right_note = "", ...) {
+    oldpar <- par(oma = c(1, 0, 0, 0))
+    # box("inner", col = "green")
+    
+    mtext(left_note, line = 0, adj = 0.02, side = 1, outer = TRUE, ...)
+    mtext(right_note, line = 0, adj = 0.98, side = 1, outer = TRUE, ...)
+    par(oldpar)
+}
+
+par(op)
+plot(runif(10), runif(10)
+    , xlim = c(0, 1), ylim = c(0, 1)
+    , xlab = "x axis", ylab = "y axis"
+    )
+grid()
+outer_margin("SOURCE: short note", "2017-10-05 @pep", cex = 0.6, col = "blue")
 ```

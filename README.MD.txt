@@ -1,1 +1,0 @@
-The goal of this repository is to give examples of use of all base graphics package parameters.
