@@ -6,7 +6,7 @@ output:
     html_document:
         toc: true
         toc_depth: 2
-        toc_float: true
+        toc_float: TRUE
         code_folding: hide
 ---
 
@@ -1838,6 +1838,28 @@ A logical value (see log in plot.default). If TRUE, a logarithmic scale is in us
 
 ##xpd
 A logical value or NA. If FALSE, all plotting is clipped to the plot region, if TRUE, all plotting is clipped to the figure region, and if NA, all plotting is clipped to the device region. See also clip.
+
+
+```{r}
+par(mfrow = c(1, 2))
+
+set.seed(1023)
+plot(runif(10), runif(10), type = 'n', xlab = "X", ylab = "Y",
+    xlim = c(0, 1), ylim = c(0, 1), las = 1)
+points(runif(10), runif(10), pch = 20, col = "salmon")
+title(main = "xpd = FALSE (default)")
+box("figure", col = "green")
+
+plot_plt <- par("plt")
+par(xpd = NA, plt = c(0.6 * plot_plt[1] + 0.4 * plot_plt[2], plot_plt[2:4]))
+set.seed(1023)
+plot(runif(10) , runif(10), type = 'n', 
+    xlab = 'X', ylab = 'Y', xlim = c(0.4, 1), ylim = c(0, 1), las = 1)
+points(runif(10), runif(10), pch = 20)
+title(main = "xpd = NA")
+box("figure", col = "green")
+
+```
 
 ##yaxp
 A vector of the form c(y1, y2, n) giving the coordinates of the extreme tick marks and the number of intervals between tick-marks unless for log coordinates, see xaxp above.
