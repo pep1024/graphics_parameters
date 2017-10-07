@@ -26,6 +26,8 @@ op <- par(no.readonly = TRUE)
 op <- par(no.readonly = TRUE)
 ```
 
+# Examples for each parameter
+
 ##adj
 The value of adj determines the way in which text strings are justified in text, mtext and title. A value of 0 produces left-justified text, 0.5 (the default) centered text and 1 right-justified text. (Any value in [0, 1] is allowed, and on most devices values outside that interval will also work.)
 
@@ -1877,22 +1879,10 @@ A positive real value used in the positioning of text in the margins by axis and
 A logical value; see xlog above.
 
 
-## Extra material
+# Additonal examples
 
-### mar and mai
-mai:
-numerical vector of the form c(bottom, left, top, right) which gives the margin size specified in inches.
-mar:
-A numerical vector of the form c(bottom, left, top, right) which gives the number of lines of margin to be specified on the four sides of the plot. The default is c(5, 4, 4, 2) + 0.1.
+## Personalized grid
 
-```{r}
-op <- par(no.readonly = TRUE)
-op$mai
-```
-
-```{r}
-op$mar
-```
 ```{r}
 plot(0:1, 0:1, axes = FALSE, xlab = "", ylab = "")
 
@@ -1901,35 +1891,56 @@ text(1, 0, "(1, 0)")
 text(0, 1, "(0, 1)")
 text(1, 1, "(1, 1)")
 
-mtext(paste0("mai = c(", paste(op$mai, collapse = ", "), ")", " line = 0"), line = 0, side = 1)
-mtext(paste0("mar = c(", paste(op$mar, collapse = ", "), ")", " line = 1"), line = 1, side = 1)
-mtext(paste0("omi = c(", paste(op$omi, collapse = ", "), ")", " line = 2"), line = 2, side = 1)
-mtext(paste0("omr = c(", paste(op$omr, collapse = ", "), ")", " line = 3"), line = 3, side = 1)
+mtext(paste0("mai = c(", paste(op$mai, collapse = ", "), ")"), line = 0
+    , side = 1, at = 0.4, adj = 0)
+mtext(paste0("mar = c(", paste(op$mar, collapse = ", "), ")"), line = 1
+    , side = 1, at = 0.4, adj = 0)
+mtext(paste0("omi = c(", paste(op$omi, collapse = ", "), ")"), line = 2
+    , side = 1, at = 0.4, adj = 0)
+mtext(paste0("omd = c(", paste(op$omd, collapse = ", "), ")"), line = 3
+    , side = 1, at = 0.4, adj = 0)
+
+mtext(paste0(" line = 0"), line = 0, side = 1, adj = 0)
+mtext(paste0(" line = 1"), line = 1, side = 1, adj = 0)
+mtext(paste0(" line = 2"), line = 2, side = 1, adj = 0)
+mtext(paste0(" line = 3"), line = 3, side = 1, adj = 0)
 
 abline(v = c(seq(0, 1, 0.1)), h = c(seq(0, 1, 0.1)), lty = 2)
 ```
 
-
+## Inside plot
 
 ```{r}
 par(op)
 plot(0:1, 0:1, axes = FALSE, bty = 'o', xlab = "", ylab = "")
-mtext(paste0("bty = ", "'o'"), line = 0, side = 1)
-mtext(paste0("mar = c(", paste(op$mar, collapse = ", "), ")"), line = 1, side = 1)
-mtext(paste0("omi = c(", paste(op$omi, collapse = ", "), ")"), line = 2, side = 1)
-mtext(paste0("plt = c(", paste(round(op$plt, 2), collapse = ", "), ")"), line = 3, side = 1)
-mtext(paste0("fig = c(", paste(op$fig, collapse = ", "), ")"), line = 4, side = 1)
-mtext(paste0("plt = c(", paste(round(op$plt, 2), collapse = ", "), ")"), line = 0, side = 2)
-mtext(paste0("pin = c(", paste(round(op$pin, 2), collapse = ", "), ")"), line = 1, side = 2)
+mtext(paste0("bty = ", "'o'")
+    , line = 0, side = 1, adj = 0, at = 0)
+mtext(paste0("mar = c(", paste(op$mar, collapse = ", "), ")")
+    , line = 1, side = 1, adj = 0, at = 0)
+mtext(paste0("mai = c(", paste(op$mai, collapse = ", "), ")")
+    , line = 2, side = 1, adj = 0, at = 0)
+mtext(paste0("omd = c(", paste(round(op$omd, 2), collapse = ", "), ")")
+    , line = 3, side = 1, adj = 0, at = 0)
+mtext(paste0("fig = c(", paste(op$fig, collapse = ", "), ")")
+    , line = 4, side = 1, adj = 0, at = 0)
+mtext(paste0("plt = c(", paste(round(op$plt, 2), collapse = ", "), ")")
+    , line = 0, side = 1, adj = 0, at = 0.5)
+mtext(paste0("pin = c(", paste(round(op$pin, 2), collapse = ", "), ")")
+    , line = 1, side = 1, adj = 0, at = 0.5)
 
 abline(v = c(seq(0, 1, 0.1)), h = c(seq(0, 1, 0.1)), lty = 2)
 
-par(plt = c(0.5, 0.8, 0.5, 0.8))
-box(lty = '1111', col = 'blue' )
-abline(v = c(seq(0, 1, 0.1)), h = c(seq(0, 1, 0.1)), lty = 1, col = "green")
-par(new = TRUE)
-plot(runif(10), runif(10), xlim = c(0, 1), ylim = c(0, 1))
+# Inside plot
+par(plt = c(0.5, 0.8, 0.5, 0.8), new = TRUE)
+plot(runif(10), runif(10), xlim = c(0, 1), ylim = c(0, 1), bty = 'n')
+rect(0, 0, 1, 1, border = "red", lty = 1)
+box(which = "plot", lty = 2, col = 'blue' )
+grid(lty = 2, col = "green")
+rect(0, 0, 1, 1, border = "red", lty = 1)
+
 ```
+
+## Initial grid with NDC
 
 ```{r}
 # clean plot area to start drawing
@@ -1939,9 +1950,12 @@ plot(1, 1
     , xaxs = 'i', yaxs = 'i'
     , xlim = c(0,10), ylim = c(0,10)
     , lab = c(10, 10, 7))
-grid()
+grid(col = "red")
 par(opnew)
 ```
+
+## Backgroung default Plot
+You can use this plot to compare it with changes in the graphics parameters with and overlayed plot. Remember to use ```par(new = TRUE)```
 
 ```{r}
 par(op)
