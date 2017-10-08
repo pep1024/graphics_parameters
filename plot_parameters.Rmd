@@ -1,5 +1,5 @@
 ---
-title: "Graphical parameters of {graphics} package"
+title: "Graphical parameters of R {graphics} package"
 author: "Pep Porrà"
 date: "March 25th, 2017"
 output: 
@@ -14,7 +14,7 @@ output:
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-This document gives examples of use for each parameter of the par function in base {graphics} package. The text that follows after each parameter is the text shown in the par function help.
+This document gives examples of use for each parameter of the par function in R base {graphics} package. The text that follows after each parameter is the text shown in the par function help.
 
 Before starting with the examples for each parameter, we save first the value of all parameters (those that can be changed) into a variable to be able to reset them to the initial state.
 
