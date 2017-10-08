@@ -1,2 +1,1 @@
-The goal of this repository is to give examples of use 
-for all graphical parameters of the R Graphics Package parameters.
+The goal of this repository is to give examples of use for all graphical parameters of the R Graphics Package parameters. An online version of this document can be found at [RPubs](http://rpubs.com/pep1024/315576)

@@ -1977,42 +1977,42 @@ plot(runif(10), runif(10)
 par(op)
 ```
 
+## Change number of ticks in axis
 
 ```{r}
 text_info <- function(){
-    mtext(paste0("ps = ", "8, (default = 12)"), line = 0, side = 1, at = 0.5, adj = 0)
+    mtext(paste0("ps = ", "8, (default = 12)")
+        , line = 0, side = 1, at = 0.05, adj = 0, outer = TRUE)
     mtext(paste0("mar = c(", paste(par("mar"), collapse = ", "), ")")
-        , line = 1, side = 1, at = 0.5, adj = 0)
-    mtext(paste0("cxy = c(", paste(par("cxy"), collapse = ", "), ")")
-        , line = 2, side = 1, at = 0.5, adj = 0)
+        , line = 1, side = 1, at = 0.05, adj = 0, outer = TRUE)
     mtext(paste0("mai = c(", paste(par("mai"), collapse = ", "), ")")
-        , line = 3, side = 1, at = 0.5, adj = 0)
+        , line = 2, side = 1, at = 0.05, adj = 0, outer = TRUE)
+    mtext(paste0("cxy = c(", paste(par("cxy"), collapse = ", "), ")")
+        , line = 3, side = 1, at = 0.05, adj = 0, outer = TRUE)
     mtext(paste0("fig = c(", paste(par("fig"), collapse = ", "), ")")
-        , line = 4, side = 1, at = 0.5, adj = 0)
+        , line = 0, side = 1, at = 0.5, adj = 0, outer = TRUE)
     mtext(paste0("plt = c(", paste(round(par("plt"), 2), collapse = ", "), ")")
-        , line = 0, side = 3, at = 0.5, adj = 0)
+        , line = 1, side = 1, at = 0.5, adj = 0, outer = TRUE)
     mtext(paste0("pin = c(", paste(round(par("pin"), 2), collapse = ", "), ")")
-        , line = 1, side = 3, at = 0.5, adj = 0)
+        , line = 2, side = 1, at = 0.5, adj = 0, outer = TRUE)
+    mtext(paste0("oma = c(", paste(round(par("oma"), 2), collapse = ", "), ")")
+        , line = 3, side = 1, at = 0.5, adj = 0, outer = TRUE)
 }
-par(mar = rep(0, 4))
-plot(1, 1
-    , type = 'n', axes = FALSE, ann = FALSE
-    , xaxs = 'i', yaxs = 'i'
-    , xlim = c(0,10), ylim = c(0,10)
-    , lab = c(10, 10, 7))
-grid(col = "red")
 
-par(mar = op$mar, ps = 8, new = TRUE)
+par(ps = 8, oma = c(4, 0, 0, 0))
+
 set.seed(1023)
 plot(runif(10), runif(10)
     , xlim = c(0, 1), ylim = c(0, 1)
     , xlab = "x axis", ylab = "y axis"
-    )
+    , lab = c(10, 10, 7))
+box("inner", lty = 4, col = "green")
+grid(col = "red")
 text_info()
 
 ```
 
-
+## Plot dimensions and inner figure
 
 ```{r}
 text_info <- function(x){
@@ -2041,13 +2041,19 @@ plot(1, 1
     , xlim = c(0,10), ylim = c(0,10)
     , lab = c(10, 10, 7))
 grid(col = "red")
-rect(1.124572, 2.266667, 9.424000, 9.066666, col = "lightgray")
+
+# Rectangle with Default plot dimensions
+plt <- op$plt   
+rect(plt[1] * 10, plt[3] * 10, plt[2] * 10, plt[4] * 10, col = "lightgray")
+
+# Rectangle with dimensions of inner figure
 rect(1.5, 1, 5.5, 8, col = "salmon")
 par(oldpar)
 
 oldpar_2 <- par(ps = 8, new = TRUE)
 plot(0:1, 0:1, typ = 'n', axes = TRUE, xlab = "", ylab = "")
 text_info(0.6)
+box("plot", lty = 2, col = "blue")
 par(oldpar_2)
 
 oldpar_3 <- par(fig = c(0.15, 0.55, 0.1, 0.8), ps = 8, new = TRUE)
@@ -2059,9 +2065,11 @@ text_info(0)
 par(oldpar_3)
 ```
 
+## Change figure dimensions
+
 ```{r}
 #oldpar_3 <- par(fig = c(0.1, 0.9, 0.1, 0.9), ps = 8)
-oldpar_3 <- par(fin = c(3, 2), ps = 8)
+oldpar_3 <- par(fin = c(4, 3), ps = 8)
 set.seed(1023)
 plot(runif(10), runif(10)
     , xlim = c(0, 1), ylim = c(0, 1)
@@ -2076,9 +2084,11 @@ mtext(side = 3, line = 1
 mtext(side = 3, line = 2
     , paste0("mar = c(", paste(round(par("mar"), 2), collapse = ", "), ")")
     , cex = 0.8, col = "blue", adj = 0)
+box("figure", lty = 2, col = "red")
 par(oldpar_3)
 ```
 
+## Margins highlighted
 
 ```{r}
 par(op)
@@ -2132,7 +2142,7 @@ box("plot", lty = 1, col = "red")
 box("figure", lty = 4, col = "blue")
 ```
 
-
+## Plot area extension controled by xaxs and yaxs
 
 ```{r}
 par(mfrow = c(2, 2))
@@ -2189,7 +2199,7 @@ plot(runif(10), runif(10), xlim = c(0, 1), ylim = c(0, 1))
 box("figure", lty = 1, col = "red")
 ```
 
-### Plot signature
+## Plot signature
 
 
 ```{r}
